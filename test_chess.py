@@ -2,6 +2,13 @@ import pytest
 from chess import *
 
 
+def test_translate_algebraic():
+    assert translate_algebraic("a1", 7, 7) == "h8"
+    assert translate_algebraic("h8", -7, -7) == "a1"
+    assert translate_algebraic("a1", -1, -1) == None
+    assert translate_algebraic("h8", 1, 1) == None
+
+
 @pytest.fixture
 def board():
     return Board()

@@ -22,6 +22,15 @@ BLACK_SETUP = ["e8", "d8", "a8", "h8", "b8", "g8", "c8", "f8"] + [
 ]
 COLOR = {"white": WHITE, "black": BLACK}
 OTHER_COLOR = {"white": BLACK, "black": WHITE}
+ALGEBRAIC_X = "abcdefgh"
+
+
+def translate_algebraic(coord, dx, dy):
+    """Apply movements to algebraic coordinates and return a new algebraic coordinate,
+    or None if out side of a chessboard"""
+    x, y = ALGEBRAIC_X.index(coord[0]), int(coord[1])
+    if 0 <= x + dx < 8 and 1 <= y + dy < 9:  # y is 1 indexed
+        return ALGEBRAIC_X[x + dx] + str(y + dy)
 
 
 class Board:
@@ -31,7 +40,7 @@ class Board:
         self.removed = []
         for y in range(8):
             for x in range(8):
-                square = "abcdefgh"[x] + str(y + 1)
+                square = ALGEBRAIC_X[x] + str(y + 1)
                 self.board[square] = None
 
     def add_piece(self, piece, coord):
