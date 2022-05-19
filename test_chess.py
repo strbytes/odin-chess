@@ -1,0 +1,91 @@
+import pytest
+from chess import *
+
+
+@pytest.fixture
+def board():
+    return Board()
+
+
+@pytest.fixture
+def board_one_pawn(board):
+    board.add_piece(Pawn(board, "white"), "d2")
+    return board
+
+
+@pytest.fixture
+def board_two_pawns(board_one_pawn):
+    board_one_pawn.add_piece(Pawn(board_one_pawn, "black"), "e3")
+    black_pawn = board_one_pawn.board["e3"]
+    black_pawn.board.board["e3"].moved = True
+    return board_one_pawn
+
+
+@pytest.fixture
+def board_three_pawns(board_two_pawns):
+    board_two_pawns.add_piece(Pawn(board_two_pawns, "white"), "e2")
+    return board_two_pawns
+
+
+class TestPawn:
+    def test_one_pawn(self, board_one_pawn):
+        pawn = board_one_pawn.board["d2"]
+        # checking starting moves available
+        assert pawn.legal_moves == ["d3", "d4"], "expected legal moves d3 and d4"
+        pawn.moved = True
+        # checking moved flag prevents double step
+        assert pawn.legal_moves == [
+            "d3"
+        ], "expected d3 to be only legal move after setting moved"
+        board_one_pawn.move_piece(pawn, "d8")
+        # checking no movement at end of board
+        # (promotion to be handled by Game)
+        assert pawn.legal_moves == [], "expected no legal moves at end of board"
+
+    def test_two_pawns(self, board_two_pawns):
+        white_pawn = board_two_pawns.board["d2"]
+        black_pawn = board_two_pawns.board["e3"]
+        # allows moves to take as well as basic moves
+        assert white_pawn.legal_moves == [
+            "d3",
+            "d4",
+            "e3",
+        ], "expected starting moves + take option"
+        # same but doesn't allow moving two spaces since moved is set
+        assert black_pawn.legal_moves == [
+            "e2",
+            "d2",
+        ], "expected basic move + take option"
+        board_two_pawns.move_piece(black_pawn, "e2")
+        # shows option for en-passant move
+        assert white_pawn.legal_moves == [
+            "d3",
+            "d4",
+            "e3",
+        ], "expected starting moves + en passant option"
+        assert black_pawn.legal_moves == [
+            "e1",
+            "d1",
+        ], "expected basic move + en passant option"
+        # checking no movement at end of board for black
+        board_two_pawns.move_piece(black_pawn, "e1")
+        assert black_pawn.legal_moves == []
+
+    def test_three_pawns(self, board_three_pawns):
+        white_pawn_d = board_three_pawns.board["d2"]
+        white_pawn_e = board_three_pawns.board["e2"]
+        black_pawn = board_three_pawns.board["e3"]
+        assert white_pawn_d.legal_moves == [
+            "d3",
+            "d4",
+            "e3",
+        ], "expected starting moves + take option"
+        assert white_pawn_e.legal_moves == [], "expected blocked pawn to have no moves"
+        assert black_pawn.legal_moves == [
+            "d2"
+        ], "expected blocked pawn to have only one move"
+        board_three_pawns.move_piece(white_pawn_d, "e3")
+        assert white_pawn_e.legal_moves == [], "expected blocked pawn to have no moves"
+        assert (
+            black_pawn in board_three_pawns.removed
+        ), "expected black pawn removed from board"
