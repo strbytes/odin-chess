@@ -21,7 +21,7 @@ BLACK_SETUP = ["e8", "d8", "a8", "h8", "b8", "g8", "c8", "f8"] + [
     c + "7" for c in "abcdefgh"
 ]
 COLOR = {"white": WHITE, "black": BLACK}
-OTHER_COLOR = {"white": BLACK, "black": WHITE}
+OPPOSITE_COLOR = {"white": BLACK, "black": WHITE}
 ALGEBRAIC_X = "abcdefgh"
 
 
@@ -90,20 +90,74 @@ class Board:
 
 
 class Piece:
-    def __init__(self, color, piece):
+    """Base class for chess pieces. Not to be instantiated directly."""
+
+    def __init__(self, board, color):
+        self.board = board
         self.color = color
-        self.piece = piece
 
     def board_display(self, white_background=False):
+        """Returns a string depiction of the piece, using the alternate style
+        of icon for white tiles."""
         if white_background:
-            return OTHER_COLOR[self.color][self.piece]
+            return OPPOSITE_COLOR[self.color][self.piece]
         return COLOR[self.color][self.piece]
 
-    def __str__(self):
-        return COLOR[self.color][self.piece]
 
-    def __repr__(self):
-        return "Piece(" + "'" + self.color + "', '" + self.piece + "')"
+class King(Piece):
+    piece = "king"
+    possible_moves = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+
+class Queen(Piece):
+    piece = "queen"
+    possible_moves = (
+        [(i + 1, 0) for i in range(8)]
+        + [(0, i + 1) for i in range(8)]
+        + [(-(i + 1), 0) for i in range(8)]
+        + [(0, -(i + 1)) for i in range(8)]
+        + [(i + 1, i + 1) for i in range(8)]
+        + [(i + 1, -(i + 1)) for i in range(8)]
+        + [(-(i + 1), -(i + 1)) for i in range(8)]
+        + [(-(i + 1), i + 1) for i in range(8)]
+    )
+
+
+class Rook(Piece):
+    piece = "rook"
+    possible_moves = (
+        [(i + 1, 0) for i in range(8)]
+        + [(0, i + 1) for i in range(8)]
+        + [(-(i + 1), 0) for i in range(8)]
+        + [(0, -(i + 1)) for i in range(8)]
+    )
+
+
+class Knight(Piece):
+    piece = "knight"
+    possible_moves = None  # TODO
+
+
+class Bishop(Piece):
+    piece = "bishop"
+    possible_moves = (
+        [(i + 1, i + 1) for i in range(8)]
+        + [(i + 1, -(i + 1)) for i in range(8)]
+        + [(-(i + 1), -(i + 1)) for i in range(8)]
+        + [(-(i + 1), i + 1) for i in range(8)]
+    )
+
+
+class Pawn(Piece):
+    piece = "pawn"
+    possible_moves = [(0, 1), (0, 2), (-1, 1), (1, 1)]
+
+    @property
+    def legal_moves(self):
+        pos = self.board[self]
+        assert pos, "can't check moves on a piece not on the board"
+        moves = []
+        # TODO
 
 
 class Player:
