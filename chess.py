@@ -163,7 +163,10 @@ class Bishop(Piece):
 
 class Pawn(Piece):
     piece = "pawn"
-    moved = False
+
+    def __init__(self, board, color):
+        self.moved = False
+        Piece.__init__(self, board, color)
 
     @property
     def legal_moves(self):
