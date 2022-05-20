@@ -259,3 +259,30 @@ class TestQueen:
             "h5",
             "g6",
         ]
+
+
+@pytest.fixture
+def board_two_kings(board):
+    board.add_piece(King(board, "white"), "c4")
+    board.add_piece(King(board, "black"), "f6")
+    for i in range(8):
+        board.add_piece(Pawn(board, "black"), ALGEBRAIC_X[i] + "7")
+    return board
+
+
+class TestKing:
+    def test_two_kings(self, board_two_kings):
+
+        white_king = board_two_kings.board["c4"]
+        black_king = board_two_kings.board["f6"]
+        assert white_king.legal_moves == [
+            "b3",
+            "b4",
+            "b5",
+            "c3",
+            "c5",
+            "d3",
+            "d4",
+            "d5",
+        ]
+        assert black_king.legal_moves == ["e5", "e6", "f5", "g5", "g6"]

@@ -106,7 +106,34 @@ class Piece:
 
 class King(Piece):
     piece = "king"
-    possible_moves = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+    def __init__(self, board, color):
+        self.moved = False
+        Piece.__init__(self, board, color)
+
+    @property
+    def legal_moves(self):
+        pos = self.board.pieces[self]
+        board = self.board.board
+        assert pos, "can't check moves on a piece not on the board"
+        moves = []
+        for x in (-1, 0, 1):
+            for y in (-1, 0, 1):
+                if not (x == 0 and y == 0):
+                    step = translate_algebraic(pos, x, y)
+                    if step is not None:
+                        if not self.test_check(step):
+                            if board[step] is None or board[step].color != self.color:
+                                moves.append(step)
+        return moves
+
+    @property
+    def in_check(self):
+        return self.test_check(self.pos)
+
+    def test_check(self, coord):
+        # TODO
+        pass
 
 
 class Queen(Piece):
