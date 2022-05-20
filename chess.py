@@ -150,14 +150,36 @@ class Bishop(Piece):
 
 class Pawn(Piece):
     piece = "pawn"
-    possible_moves = [(0, 1), (0, 2), (-1, 1), (1, 1)]
+    moved = False
 
     @property
     def legal_moves(self):
-        pos = self.board[self]
+        pos = self.board.pieces[self]
+        dir = 1 if self.color == "white" else -1
+        board = self.board.board
         assert pos, "can't check moves on a piece not on the board"
         moves = []
-        # TODO
+        one_step = translate_algebraic(pos, 0, dir)
+        two_step = translate_algebraic(pos, 0, 2 * dir)
+        diagonals = [translate_algebraic(pos, i, dir) for i in (-1, 1)]
+        # move
+        if one_step is not None and board[one_step] is None:
+            moves.append(one_step)
+            if two_step is not None and not self.moved and board[two_step] is None:
+                moves.append(two_step)
+        # take
+        for diag in diagonals:
+            if (
+                diag is not None
+                and board[diag] is not None
+                and board[diag].color != self.color
+            ):
+                moves.append(diag)
+            elif diag is not None and board[diag] is None:
+                side = translate_algebraic(diag, 0, -dir)
+                if board[side] is not None and board[side].color != self.color:
+                    moves.append(diag)
+        return moves
 
 
 class Player:
