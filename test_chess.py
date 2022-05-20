@@ -99,6 +99,32 @@ class TestPawn:
 
 
 @pytest.fixture
+def board_two_knights(board):
+    board.add_piece(Knight(board, "white"), "c5")
+    board.add_piece(Knight(board, "black"), "f5")
+    for i in range(8):
+        board.add_piece(Pawn(board, "black"), ALGEBRAIC_X[i] + "7")
+    return board
+
+
+class TestKnight:
+    def test_knight(self, board_two_knights):
+        white_knight = board_two_knights.board["c5"]
+        black_knight = board_two_knights.board["f5"]
+        assert white_knight.legal_moves == [
+            "a4",
+            "a6",
+            "b3",
+            "b7",
+            "d3",
+            "d7",
+            "e4",
+            "e6",
+        ]
+        assert black_knight.legal_moves == ["d4", "d6", "e3", "g3", "h4", "h6"]
+
+
+@pytest.fixture
 def board_two_bishops(board):
     board.add_piece(Bishop(board, "white"), "c5")
     board.add_piece(Bishop(board, "black"), "f5")

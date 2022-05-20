@@ -154,7 +154,22 @@ class Rook(Piece):
 
 class Knight(Piece):
     piece = "knight"
-    possible_moves = None  # TODO
+
+    @property
+    def legal_moves(self):
+        pos = self.board.pieces[self]
+        board = self.board.board
+        assert pos, "can't check moves on a piece not on the board"
+        moves = []
+        knight_moves = []
+        for x in [-2, -1, 1, 2]:
+            for y in [-2, -1, 1, 2]:
+                if abs(x) != abs(y) and (new_pos := translate_algebraic(pos, x, y)):
+                    if not board[new_pos]:
+                        knight_moves.append(new_pos)
+                    elif board[new_pos].color != self.color:
+                        knight_moves.append(new_pos)
+        return knight_moves
 
 
 class Bishop(Piece):
