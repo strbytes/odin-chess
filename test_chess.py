@@ -133,3 +133,45 @@ class TestBishop:
             "b1",
             "e6",
         ]
+
+
+@pytest.fixture
+def board_two_rooks(board):
+    board.add_piece(Rook(board, "white"), "c5")
+    board.add_piece(Rook(board, "black"), "f5")
+    for i in range(8):
+        board.add_piece(Pawn(board, "black"), ALGEBRAIC_X[i] + "7")
+    return board
+
+
+class TestRook:
+    def test_rook(self, board_two_rooks):
+        white_rook = board_two_rooks.board["c5"]
+        black_rook = board_two_rooks.board["f5"]
+        assert white_rook.legal_moves == [
+            "d5",
+            "e5",
+            "f5",
+            "c6",
+            "c7",
+            "b5",
+            "a5",
+            "c4",
+            "c3",
+            "c2",
+            "c1",
+        ]
+        assert black_rook.legal_moves == [
+            "g5",
+            "h5",
+            "f6",
+            "e5",
+            "d5",
+            "c5",
+            "f4",
+            "f3",
+            "f2",
+            "f1",
+        ]
+
+        # TODO test castling

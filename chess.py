@@ -125,12 +125,31 @@ class Queen(Piece):
 
 class Rook(Piece):
     piece = "rook"
-    possible_moves = (
-        [(i + 1, 0) for i in range(8)]
-        + [(0, i + 1) for i in range(8)]
-        + [(-(i + 1), 0) for i in range(8)]
-        + [(0, -(i + 1)) for i in range(8)]
-    )
+
+    def __init__(self, board, color):
+        self.moved = False
+        Piece.__init__(self, board, color)
+
+    @property
+    def legal_moves(self):
+        pos = self.board.pieces[self]
+        board = self.board.board
+        assert pos, "can't check moves on a piece not on the board"
+        moves = []
+        for x, y in [(1, 0), (0, 1), (-1, 0), (0, -1)]:
+            i = 1
+            while True:
+                line = translate_algebraic(pos, x * i, y * i)
+                if line is not None and board[line] is None:
+                    moves.append(line)
+                    i += 1
+                else:
+                    if line is not None and board[line].color != self.color:
+                        moves.append(line)
+                    break
+        # TODO: castling
+        # needs a way to find own King -- via Board or Player?
+        return moves
 
 
 class Knight(Piece):
