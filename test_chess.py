@@ -201,3 +201,61 @@ class TestRook:
         ]
 
         # TODO test castling
+
+
+@pytest.fixture
+def board_two_queens(board):
+    board.add_piece(Queen(board, "white"), "c5")
+    board.add_piece(Queen(board, "black"), "f5")
+    for i in range(8):
+        board.add_piece(Pawn(board, "black"), ALGEBRAIC_X[i] + "7")
+    return board
+
+
+class TestQueen:
+    def test_queen(self, board_two_queens):
+        white_queen = board_two_queens.board["c5"]
+        black_queen = board_two_queens.board["f5"]
+        assert white_queen.legal_moves == [
+            "b4",
+            "a3",
+            "b5",
+            "a5",
+            "b6",
+            "a7",
+            "c4",
+            "c3",
+            "c2",
+            "c1",
+            "c6",
+            "c7",
+            "d4",
+            "e3",
+            "f2",
+            "g1",
+            "d5",
+            "e5",
+            "f5",
+            "d6",
+            "e7",
+        ]
+        assert black_queen.legal_moves == [
+            "e4",
+            "d3",
+            "c2",
+            "b1",
+            "e5",
+            "d5",
+            "c5",
+            "e6",
+            "f4",
+            "f3",
+            "f2",
+            "f1",
+            "f6",
+            "g4",
+            "h3",
+            "g5",
+            "h5",
+            "g6",
+        ]
