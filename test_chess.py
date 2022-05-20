@@ -96,3 +96,40 @@ class TestPawn:
         assert (
             black_pawn in board_three_pawns.removed
         ), "expected black pawn removed from board"
+
+
+@pytest.fixture
+def board_two_bishops(board):
+    board.add_piece(Bishop(board, "white"), "c5")
+    board.add_piece(Bishop(board, "black"), "f5")
+    for i in range(8):
+        board.add_piece(Pawn(board, "black"), ALGEBRAIC_X[i] + "7")
+    return board
+
+
+class TestBishop:
+    def test_bishop(self, board_two_bishops):
+        white_bishop = board_two_bishops.board["c5"]
+        black_bishop = board_two_bishops.board["f5"]
+        assert white_bishop.legal_moves == [
+            "d6",
+            "e7",
+            "d4",
+            "e3",
+            "f2",
+            "g1",
+            "b4",
+            "a3",
+            "b6",
+            "a7",
+        ]
+        assert black_bishop.legal_moves == [
+            "g6",
+            "g4",
+            "h3",
+            "e4",
+            "d3",
+            "c2",
+            "b1",
+            "e6",
+        ]

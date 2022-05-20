@@ -140,12 +140,25 @@ class Knight(Piece):
 
 class Bishop(Piece):
     piece = "bishop"
-    possible_moves = (
-        [(i + 1, i + 1) for i in range(8)]
-        + [(i + 1, -(i + 1)) for i in range(8)]
-        + [(-(i + 1), -(i + 1)) for i in range(8)]
-        + [(-(i + 1), i + 1) for i in range(8)]
-    )
+
+    @property
+    def legal_moves(self):
+        pos = self.board.pieces[self]
+        board = self.board.board
+        assert pos, "can't check moves on a piece not on the board"
+        moves = []
+        for x, y in [(1, 1), (1, -1), (-1, -1), (-1, 1)]:
+            i = 1
+            while True:
+                diag = translate_algebraic(pos, x * i, y * i)
+                if diag is not None and board[diag] is None:
+                    moves.append(diag)
+                    i += 1
+                else:
+                    if diag is not None and board[diag].color != self.color:
+                        moves.append(diag)
+                    break
+        return moves
 
 
 class Pawn(Piece):
