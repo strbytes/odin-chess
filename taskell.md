@@ -1,19 +1,22 @@
 ## To Do
 
+- Add way for castling pieces to find each other
+    > Dictionary by name in Player class?
+
+## Doing
+
 - Plan approach
 - Add basic movement logic
     * [ ] Piece types have movement logic
 - Add subclasses for Piece types
-    * [ ] Redefine basic class structure
+    * [x] Redefine basic class structure
     * [ ] King
     * [ ] Queen
-    * [ ] Rook
+    * [x] Rook
+    * [ ] - Castling
     * [ ] Knight
-    * [ ] Bishop
-    * [ ] Pawn
-
-## Doing
-
+    * [x] Bishop
+    * [x] Pawn
 
 ## Done
 
