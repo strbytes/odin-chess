@@ -79,3 +79,21 @@ class TestBishop:
         assert (
             black_bishop in board.removed
         ), "black bishop should be removed after being taken"
+
+
+@pytest.fixture
+def board_knight_and_pawns(board_white_pawns):
+    board_white_pawns.add_piece(wk := Knight(board_white_pawns, "white"), "b1")
+    board_white_pawns.add_piece(bk := Knight(board_white_pawns, "black"), "d5")
+    return {"board": board_white_pawns, "white_knight": wk, "black_knight": bk}
+
+
+class TestKnight:
+    def test_knight(self, board_knight_and_pawns):
+        board = board_knight_and_pawns["board"]
+        white_knight = board_knight_and_pawns["white_knight"]
+        black_knight = board_knight_and_pawns["black_knight"]
+        white_knight.move("c3")
+        black_knight.move("c3")
+        assert board.board["c3"] == black_knight
+        assert white_knight in board.removed
