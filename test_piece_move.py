@@ -161,3 +161,13 @@ class TestQueen:
         assert (
             black_queen in board.removed
         ), "black queen should be removed after being taken"
+
+
+def test_threatened_squares(board_white_pawns):
+    assert not board_white_pawns.threatened_squares[
+        "white"
+    ], "expect no threatened squares for white on a board with no black pieces"
+    for square in [col + "3" for col in ALGEBRAIC_X]:
+        assert (
+            square in board_white_pawns.threatened_squares["black"]
+        ), f"expected {square} in threatened squares for black"

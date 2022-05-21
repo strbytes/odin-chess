@@ -67,6 +67,15 @@ class Board:
         self.pieces[piece] = coord
         self.board[coord] = piece
 
+    @property
+    def threatened_squares(self):
+        # threatened squares are named for the side being threatened
+        threatened = {"black": set(), "white": set()}
+        for piece in self.pieces:
+            for move in piece.legal_moves:
+                threatened["black" if piece.color == "white" else "white"].add(move)
+        return threatened
+
     def __str__(self):
         black_on_white = "\u001b[47m\u001b[30m"  # ]]
         reset = "\u001b[0m"  # ]
