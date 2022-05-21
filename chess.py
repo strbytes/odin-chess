@@ -146,7 +146,7 @@ class King(Piece):
 
     @property
     def can_castle(self):
-        if self.moved:
+        if self.moved or self.in_check:
             return {}
         castleable_rooks = {}
         column = str(self.pos[1])
@@ -154,6 +154,7 @@ class King(Piece):
             if piece.color == self.color:
                 if piece.piece == "rook" and not piece.moved:
                     # check rook location to determine side
+                    # a column is queenside
                     if self.board.pieces[piece][0] == "a":
                         knight_square = "b" + column
                         bishop_square = "c" + column
@@ -162,8 +163,11 @@ class King(Piece):
                             self.board.board[knight_square] == None
                             and self.board.board[bishop_square] == None
                             and self.board.board[queen_square] == None
-                            and not self.test_check(
-                                "c1" if self.color == "white" else "c8"
+                            and not any(
+                                [
+                                    self.test_check(square)
+                                    for square in [queen_square, bishop_square]
+                                ]
                             )
                         ):
                             castleable_rooks["queenside"] = piece
@@ -173,8 +177,11 @@ class King(Piece):
                         if (
                             self.board.board[knight_square] == None
                             and self.board.board[bishop_square] == None
-                            and not self.test_check(
-                                "g1" if self.color == "white" else "g8"
+                            and not any(
+                                [
+                                    self.test_check(square)
+                                    for square in [knight_square, bishop_square]
+                                ]
                             )
                         ):
                             castleable_rooks["kingside"] = piece
