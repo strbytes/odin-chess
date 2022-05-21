@@ -97,3 +97,33 @@ class TestKnight:
         black_knight.move("c3")
         assert board.board["c3"] == black_knight
         assert white_knight in board.removed
+
+
+@pytest.fixture
+def board_rooks_and_pawns(board_white_pawns):
+    board_white_pawns.add_piece(wr := Rook(board_white_pawns, "white"), "h1")
+    board_white_pawns.add_piece(br := Rook(board_white_pawns, "black"), "h4")
+    return {"board": board_white_pawns, "white_rook": wr, "black_rook": br}
+
+
+class TestRook:
+    def test_rook(self, board_rooks_and_pawns):
+        board = board_rooks_and_pawns["board"]
+        white_rook = board_rooks_and_pawns["white_rook"]
+        black_rook = board_rooks_and_pawns["black_rook"]
+        assert all(
+            [move[1] == "1" for move in white_rook.legal_moves]
+        ), "white rook behind pawns should have only horizontal legal moves"
+        black_rook.move("h2")
+        assert board.board["h2"] == black_rook, "black rook should be at h2 after move"
+        assert (
+            "h2" in white_rook.legal_moves
+        ), "h2 should be in legal moves for white rook after black rook takes pawn in front"
+        white_rook.move("h2")
+        assert board.board["h2"] == white_rook, "white rook should be at h2 after move"
+        assert (
+            "h8" in white_rook.legal_moves
+        ), "white rook should be able to move across board after taking black rook"
+        assert (
+            black_rook in board.removed
+        ), "black rook should be removed after being taken"
