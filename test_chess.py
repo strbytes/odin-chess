@@ -270,6 +270,19 @@ def board_two_kings(board):
     return board
 
 
+@pytest.fixture
+def board_white_backline(board):
+    board.add_piece(Rook(board, "white"), "a1")
+    board.add_piece(Knight(board, "white"), "b1")
+    board.add_piece(Bishop(board, "white"), "c1")
+    board.add_piece(Queen(board, "white"), "d1")
+    board.add_piece(King(board, "white"), "e1")
+    board.add_piece(Bishop(board, "white"), "f1")
+    board.add_piece(Knight(board, "white"), "g1")
+    board.add_piece(Rook(board, "white"), "h1")
+    return board
+
+
 class TestKing:
     def test_two_kings(self, board_two_kings):
 
@@ -286,3 +299,34 @@ class TestKing:
             "d5",
         ]
         assert black_king.legal_moves == ["e5", "e6", "f5", "g5", "g6"]
+
+    def test_castle_no_check(self, board_white_backline):
+        qside = {
+            "rook": board_white_backline.board["a1"],
+            "knight": board_white_backline.board["b1"],
+            "bishop": board_white_backline.board["c1"],
+            "queen": board_white_backline.board["d1"],
+        }
+        kside = {
+            "king": board_white_backline.board["e1"],
+            "bishop": board_white_backline.board["f1"],
+            "knight": board_white_backline.board["g1"],
+            "rook": board_white_backline.board["h1"],
+        }
+        assert kside["king"].can_castle == {}
+        board_white_backline.remove_piece(qside["knight"])
+        board_white_backline.remove_piece(qside["bishop"])
+        assert kside["king"].can_castle == {}
+        board_white_backline.remove_piece(qside["queen"])
+        assert list(kside["king"].can_castle.keys()) == ["queenside"]
+        board_white_backline.remove_piece(kside["knight"])
+        board_white_backline.remove_piece(kside["bishop"])
+        assert list(kside["king"].can_castle.keys()) == ["queenside", "kingside"]
+        qside["rook"].moved = True
+        assert list(kside["king"].can_castle.keys()) == ["kingside"]
+        kside["rook"].moved = True
+        assert kside["king"].can_castle == {}
+        qside["rook"].moved = False
+        kside["rook"].moved = False
+        kside["king"].moved = True
+        assert kside["king"].can_castle == {}

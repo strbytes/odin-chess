@@ -133,6 +133,41 @@ class King(Piece):
         return moves
 
     @property
+    def can_castle(self):
+        if self.moved:
+            return {}
+        castleable_rooks = {}
+        for piece in self.board.pieces:
+            if piece.color == self.color:
+                if piece.piece == "rook" and not piece.moved:
+                    # check rook location to determine side
+                    if self.board.pieces[piece][0] == "a":
+                        knight_square = "b1" if self.color == "white" else "b8"
+                        bishop_square = "c1" if self.color == "white" else "c8"
+                        queen_square = "d1" if self.color == "white" else "d8"
+                        if (
+                            self.board.board[knight_square] == None
+                            and self.board.board[bishop_square] == None
+                            and self.board.board[queen_square] == None
+                            and not self.test_check(
+                                "c1" if self.color == "white" else "c8"
+                            )
+                        ):
+                            castleable_rooks["queenside"] = piece
+                    else:  # if not queenside must be kingside
+                        knight_square = "g1" if self.color == "white" else "g8"
+                        bishop_square = "f1" if self.color == "white" else "f8"
+                        if (
+                            self.board.board[knight_square] == None
+                            and self.board.board[bishop_square] == None
+                            and not self.test_check(
+                                "g1" if self.color == "white" else "g8"
+                            )
+                        ):
+                            castleable_rooks["kingside"] = piece
+        return castleable_rooks
+
+    @property
     def in_check(self):
         return self.test_check(self.pos)
 
@@ -184,8 +219,6 @@ class Rook(Piece):
                     if line is not None and board[line].color != self.color:
                         moves.append(line)
                     break
-        # TODO: castling
-        # needs a way to find own King -- via Board or Player?
         return moves
 
 
