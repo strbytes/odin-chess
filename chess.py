@@ -149,14 +149,15 @@ class King(Piece):
         if self.moved:
             return {}
         castleable_rooks = {}
+        column = str(self.pos[1])
         for piece in self.board.pieces:
             if piece.color == self.color:
                 if piece.piece == "rook" and not piece.moved:
                     # check rook location to determine side
                     if self.board.pieces[piece][0] == "a":
-                        knight_square = "b1" if self.color == "white" else "b8"
-                        bishop_square = "c1" if self.color == "white" else "c8"
-                        queen_square = "d1" if self.color == "white" else "d8"
+                        knight_square = "b" + column
+                        bishop_square = "c" + column
+                        queen_square = "d" + column
                         if (
                             self.board.board[knight_square] == None
                             and self.board.board[bishop_square] == None
@@ -167,8 +168,8 @@ class King(Piece):
                         ):
                             castleable_rooks["queenside"] = piece
                     else:  # if not queenside must be kingside
-                        knight_square = "g1" if self.color == "white" else "g8"
-                        bishop_square = "f1" if self.color == "white" else "f8"
+                        knight_square = "g" + column
+                        bishop_square = "f" + column
                         if (
                             self.board.board[knight_square] == None
                             and self.board.board[bishop_square] == None
@@ -184,6 +185,7 @@ class King(Piece):
         Piece.move(self, coord)
 
     def castle(self, side):
+        assert self.pos, "King must be on board to castle"
         assert side == "queenside" or side == "kingside"
         if side not in self.can_castle:
             raise ValueError(f"cannot castle " + side)
