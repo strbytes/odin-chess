@@ -110,6 +110,10 @@ class Piece:
             return OPPOSITE_COLOR[self.color][self.piece]
         return COLOR[self.color][self.piece]
 
+    def move(self, coord):
+        assert coord in self.legal_moves
+        self.board.move_piece(self, coord)
+
     def __repr__(self):
         return self.color + " " + self.piece + " at " + self.pos
 
@@ -269,8 +273,37 @@ class Pawn(Piece):
     piece = "pawn"
 
     def __init__(self, board, color):
+        # self.double_step_turn = None
         self.just_double_stepped = False
         Piece.__init__(self, board, color)
+
+    # def just_double_stepped(self, turn):
+    #     # Refactor Piece to accept a Game attribute so pawns can check the turn themselves?
+    #     if self.double_step_turn:
+    #         return turn == self.double_step_turn + 1
+    #     return False
+
+    def move(self, coord):
+        assert coord in self.legal_moves
+        dir = 1 if self.color == "white" else -1
+        board = self.board.board
+        diags = [translate_algebraic(self.pos, i, dir) for i in (-1, 1)]
+        # check for en passant
+        if coord in diags and board[coord] is None:
+            side = translate_algebraic(coord, 0, -dir)
+            if (
+                board[side] is not None
+                and board[side].color != self.color
+                and board[side].piece == "pawn"
+                and board[side].just_double_stepped == True
+            ):
+                self.board.move_piece(self, coord)
+                self.board.remove_piece(board[side])
+        else:
+            print(coord, translate_algebraic(self.pos, 0, 2 * dir))
+            if coord == translate_algebraic(self.pos, 0, 2 * dir):
+                self.just_double_stepped = True
+            Piece.move(self, coord)
 
     @property
     def legal_moves(self):
