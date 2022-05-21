@@ -171,6 +171,18 @@ class King(Piece):
                             castleable_rooks["kingside"] = piece
         return castleable_rooks
 
+    def castle(self, side):
+        assert side == "queenside" or side == "kingside"
+        if side not in self.can_castle:
+            raise ValueError(f"cannot castle " + side)
+        else:
+            rook = self.can_castle[side]
+            row = self.pos[1]
+            king_col = "c" if side == "queenside" else "g"
+            rook_col = "d" if side == "queenside" else "f"
+            self.board.move_piece(self, king_col + row)
+            self.board.move_piece(rook, rook_col + row)
+
     @property
     def in_check(self):
         return self.test_check(self.pos)
