@@ -127,3 +127,37 @@ class TestRook:
         assert (
             black_rook in board.removed
         ), "black rook should be removed after being taken"
+
+
+@pytest.fixture
+def board_queens_and_pawns(board_white_pawns):
+    board_white_pawns.add_piece(wq := Queen(board_white_pawns, "white"), "d1")
+    board_white_pawns.add_piece(bq := Queen(board_white_pawns, "black"), "d4")
+    return {"board": board_white_pawns, "white_queen": wq, "black_queen": bq}
+
+
+class TestQueen:
+    def test_queen(self, board_queens_and_pawns):
+        board = board_queens_and_pawns["board"]
+        white_queen = board_queens_and_pawns["white_queen"]
+        black_queen = board_queens_and_pawns["black_queen"]
+        assert all(
+            [move[1] == "1" for move in white_queen.legal_moves]
+        ), "white queen behind pawns should have only horizontal legal moves"
+        black_queen.move("d2")
+        assert (
+            board.board["d2"] == black_queen
+        ), "black queen should be at d2 after move"
+        assert (
+            "d2" in white_queen.legal_moves
+        ), "d2 should be in legal moves for white queen after black queen takes pawn in front"
+        white_queen.move("d2")
+        assert (
+            board.board["d2"] == white_queen
+        ), "white queen should be at d2 after move"
+        assert all(
+            [move in white_queen.legal_moves for move in ["a5", "d8", "h6"]]
+        ), "white queen should be able to move across board after taking black queen"
+        assert (
+            black_queen in board.removed
+        ), "black queen should be removed after being taken"
