@@ -95,6 +95,13 @@ class Piece:
     def __init__(self, board, color):
         self.board = board
         self.color = color
+        self.moved = False
+
+    @property
+    def pos(self):
+        if self not in self.board.pieces:
+            return None
+        return self.board.pieces[self]
 
     def board_display(self, white_background=False):
         """Returns a string depiction of the piece, using the alternate style
@@ -103,24 +110,22 @@ class Piece:
             return OPPOSITE_COLOR[self.color][self.piece]
         return COLOR[self.color][self.piece]
 
+    def __repr__(self):
+        return self.color + " " + self.piece + " at " + self.pos
+
 
 class King(Piece):
     piece = "king"
 
-    def __init__(self, board, color):
-        self.moved = False
-        Piece.__init__(self, board, color)
-
     @property
     def legal_moves(self):
-        pos = self.board.pieces[self]
         board = self.board.board
-        assert pos, "can't check moves on a piece not on the board"
+        assert self.pos, "can't check moves on a piece not on the board"
         moves = []
         for x in (-1, 0, 1):
             for y in (-1, 0, 1):
                 if not (x == 0 and y == 0):
-                    step = translate_algebraic(pos, x, y)
+                    step = translate_algebraic(self.pos, x, y)
                     if step is not None:
                         if not self.test_check(step):
                             if board[step] is None or board[step].color != self.color:
@@ -141,16 +146,15 @@ class Queen(Piece):
 
     @property
     def legal_moves(self):
-        pos = self.board.pieces[self]
         board = self.board.board
-        assert pos, "can't check moves on a piece not on the board"
+        assert self.pos, "can't check moves on a piece not on the board"
         moves = []
         for x in (-1, 0, 1):
             for y in (-1, 0, 1):
                 if not (x == 0 and y == 0):
                     i = 1
                     while True:
-                        line = translate_algebraic(pos, x * i, y * i)
+                        line = translate_algebraic(self.pos, x * i, y * i)
                         if line is not None and board[line] is None:
                             moves.append(line)
                             i += 1
@@ -164,20 +168,15 @@ class Queen(Piece):
 class Rook(Piece):
     piece = "rook"
 
-    def __init__(self, board, color):
-        self.moved = False
-        Piece.__init__(self, board, color)
-
     @property
     def legal_moves(self):
-        pos = self.board.pieces[self]
         board = self.board.board
-        assert pos, "can't check moves on a piece not on the board"
+        assert self.pos, "can't check moves on a piece not on the board"
         moves = []
         for x, y in [(1, 0), (0, 1), (-1, 0), (0, -1)]:
             i = 1
             while True:
-                line = translate_algebraic(pos, x * i, y * i)
+                line = translate_algebraic(self.pos, x * i, y * i)
                 if line is not None and board[line] is None:
                     moves.append(line)
                     i += 1
@@ -195,14 +194,15 @@ class Knight(Piece):
 
     @property
     def legal_moves(self):
-        pos = self.board.pieces[self]
         board = self.board.board
-        assert pos, "can't check moves on a piece not on the board"
+        assert self.pos, "can't check moves on a piece not on the board"
         moves = []
         knight_moves = []
         for x in [-2, -1, 1, 2]:
             for y in [-2, -1, 1, 2]:
-                if abs(x) != abs(y) and (new_pos := translate_algebraic(pos, x, y)):
+                if abs(x) != abs(y) and (
+                    new_pos := translate_algebraic(self.pos, x, y)
+                ):
                     if not board[new_pos]:
                         knight_moves.append(new_pos)
                     elif board[new_pos].color != self.color:
@@ -215,14 +215,13 @@ class Bishop(Piece):
 
     @property
     def legal_moves(self):
-        pos = self.board.pieces[self]
         board = self.board.board
-        assert pos, "can't check moves on a piece not on the board"
+        assert self.pos, "can't check moves on a piece not on the board"
         moves = []
         for x, y in [(1, 1), (1, -1), (-1, -1), (-1, 1)]:
             i = 1
             while True:
-                diag = translate_algebraic(pos, x * i, y * i)
+                diag = translate_algebraic(self.pos, x * i, y * i)
                 if diag is not None and board[diag] is None:
                     moves.append(diag)
                     i += 1
@@ -236,20 +235,15 @@ class Bishop(Piece):
 class Pawn(Piece):
     piece = "pawn"
 
-    def __init__(self, board, color):
-        self.moved = False
-        Piece.__init__(self, board, color)
-
     @property
     def legal_moves(self):
-        pos = self.board.pieces[self]
         dir = 1 if self.color == "white" else -1
         board = self.board.board
-        assert pos, "can't check moves on a piece not on the board"
+        assert self.pos, "can't check moves on a piece not on the board"
         moves = []
-        one_step = translate_algebraic(pos, 0, dir)
-        two_step = translate_algebraic(pos, 0, 2 * dir)
-        diagonals = [translate_algebraic(pos, i, dir) for i in (-1, 1)]
+        one_step = translate_algebraic(self.pos, 0, dir)
+        two_step = translate_algebraic(self.pos, 0, 2 * dir)
+        diagonals = [translate_algebraic(self.pos, i, dir) for i in (-1, 1)]
         # move
         if one_step is not None and board[one_step] is None:
             moves.append(one_step)
