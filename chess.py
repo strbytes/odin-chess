@@ -140,9 +140,8 @@ class King(Piece):
                 if not (x == 0 and y == 0):
                     step = translate_algebraic(self.pos, x, y)
                     if step is not None:
-                        if not self.test_check(step):
-                            if board[step] is None or board[step].color != self.color:
-                                moves.append(step)
+                        if board[step] is None or board[step].color != self.color:
+                            moves.append(step)
         return moves
 
     @property
@@ -180,6 +179,10 @@ class King(Piece):
                             castleable_rooks["kingside"] = piece
         return castleable_rooks
 
+    def move(self, coord):
+        assert not self.test_check(coord), "King cannot move into check"
+        Piece.move(self, coord)
+
     def castle(self, side):
         assert side == "queenside" or side == "kingside"
         if side not in self.can_castle:
@@ -197,8 +200,7 @@ class King(Piece):
         return self.test_check(self.pos)
 
     def test_check(self, coord):
-        # TODO
-        pass
+        return coord in self.board.threatened_squares
 
 
 class Queen(Piece):
