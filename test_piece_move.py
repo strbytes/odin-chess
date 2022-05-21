@@ -36,3 +36,46 @@ class TestPawn:
         assert board_pawns["board"].board["e6"] == board_pawns["white_pawn_2"]
         assert board_pawns["black_pawn_2"] in board_pawns["board"].removed
         assert board_pawns["black_pawn_2"] not in board_pawns["board"].pieces
+
+
+@pytest.fixture
+def board_white_pawns():
+    b = Board()
+    row = "2"
+    for c in ALGEBRAIC_X:
+        b.add_piece(Pawn(b, "white"), c + row)
+    return b
+
+
+@pytest.fixture
+def board_bishops_and_pawns(board_white_pawns):
+    board_white_pawns.add_piece(wb := Bishop(board_white_pawns, "white"), "f1")
+    board_white_pawns.add_piece(bb := Bishop(board_white_pawns, "black"), "c4")
+    return {"board": board_white_pawns, "white_bishop": wb, "black_bishop": bb}
+
+
+class TestBishop:
+    def test_bishop(self, board_bishops_and_pawns):
+        board = board_bishops_and_pawns["board"]
+        white_bishop = board_bishops_and_pawns["white_bishop"]
+        black_bishop = board_bishops_and_pawns["black_bishop"]
+        assert (
+            len(white_bishop.legal_moves) == 0
+        ), "white bishop behind pawns should have no legal moves"
+        black_bishop.move("e2")
+        assert (
+            board.board["e2"] == black_bishop
+        ), "black bishop should be at e2 after move"
+        assert white_bishop.legal_moves == [
+            "e2"
+        ], "only legal move for white bishop should be e2"
+        white_bishop.move("e2")
+        assert (
+            board.board["e2"] == white_bishop
+        ), "white bishop should be at e2 after move"
+        assert (
+            "a6" in white_bishop.legal_moves
+        ), "white bishop should be able to move across board after taking black bishop"
+        assert (
+            black_bishop in board.removed
+        ), "black bishop should be removed after being taken"
