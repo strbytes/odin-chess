@@ -268,6 +268,10 @@ class Bishop(Piece):
 class Pawn(Piece):
     piece = "pawn"
 
+    def __init__(self, board, color):
+        self.just_double_stepped = False
+        Piece.__init__(self, board, color)
+
     @property
     def legal_moves(self):
         dir = 1 if self.color == "white" else -1
@@ -275,13 +279,14 @@ class Pawn(Piece):
         assert self.pos, "can't check moves on a piece not on the board"
         moves = []
         one_step = translate_algebraic(self.pos, 0, dir)
-        two_step = translate_algebraic(self.pos, 0, 2 * dir)
         diagonals = [translate_algebraic(self.pos, i, dir) for i in (-1, 1)]
         # move
         if one_step is not None and board[one_step] is None:
             moves.append(one_step)
-            if two_step is not None and not self.moved and board[two_step] is None:
-                moves.append(two_step)
+            if not self.moved:
+                two_step = translate_algebraic(self.pos, 0, 2 * dir)
+                if two_step is not None and board[two_step] is None:
+                    moves.append(two_step)
         # take
         for diag in diagonals:
             if (
@@ -290,9 +295,15 @@ class Pawn(Piece):
                 and board[diag].color != self.color
             ):
                 moves.append(diag)
+            # check for en passant
             elif diag is not None and board[diag] is None:
                 side = translate_algebraic(diag, 0, -dir)
-                if board[side] is not None and board[side].color != self.color:
+                if (
+                    board[side] is not None
+                    and board[side].color != self.color
+                    and board[side].piece == "pawn"
+                    and board[side].just_double_stepped == True
+                ):
                     moves.append(diag)
         return moves
 

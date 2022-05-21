@@ -34,6 +34,14 @@ def board_three_pawns(board_two_pawns):
     return board_two_pawns
 
 
+@pytest.fixture
+def board_two_pawns_en_passant(board_one_pawn):
+    board_one_pawn.add_piece(Pawn(board_one_pawn, "black"), "e4")
+    black_pawn = board_one_pawn.board["e4"]
+    black_pawn.board.board["e4"].moved = True
+    return board_one_pawn
+
+
 class TestPawn:
     def test_one_pawn(self, board_one_pawn):
         pawn = board_one_pawn.board["d2"]
@@ -63,17 +71,6 @@ class TestPawn:
             "e2",
             "d2",
         ], "expected basic move + take option"
-        board_two_pawns.move_piece(black_pawn, "e2")
-        # shows option for en-passant move
-        assert white_pawn.legal_moves == [
-            "d3",
-            "d4",
-            "e3",
-        ], "expected starting moves + en passant option"
-        assert black_pawn.legal_moves == [
-            "e1",
-            "d1",
-        ], "expected basic move + en passant option"
         # checking no movement at end of board for black
         board_two_pawns.move_piece(black_pawn, "e1")
         assert black_pawn.legal_moves == []
@@ -96,6 +93,13 @@ class TestPawn:
         assert (
             black_pawn in board_three_pawns.removed
         ), "expected black pawn removed from board"
+
+    def test_en_passant(self, board_two_pawns_en_passant):
+        white_pawn = board_two_pawns_en_passant.board["d2"]
+        black_pawn = board_two_pawns_en_passant.board["e4"]
+        board_two_pawns_en_passant.move_piece(white_pawn, "d4")
+        white_pawn.just_double_stepped = True
+        assert black_pawn.legal_moves == ["e3", "d3"]
 
 
 @pytest.fixture
