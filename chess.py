@@ -245,7 +245,6 @@ class Knight(Piece):
     def legal_moves(self):
         board = self.board.board
         assert self.pos, "can't check moves on a piece not on the board"
-        moves = []
         knight_moves = []
         for x in [-2, -1, 1, 2]:
             for y in [-2, -1, 1, 2]:
