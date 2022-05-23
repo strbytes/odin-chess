@@ -145,10 +145,13 @@ class Piece:
                     if other_piece:
                         self.board.add_piece(other_piece, coord)
                     raise AssertionError("moving {self} puts king in check")
+                return
         self.board.move_piece(self, coord)
 
     def __repr__(self):
-        return self.color + " " + self.piece + " at " + self.pos
+        if self.pos:
+            return self.color + " " + self.piece + " at " + self.pos
+        return self.color + " " + self.piece + " (not on board)"
 
 
 class King(Piece):
