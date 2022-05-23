@@ -46,8 +46,8 @@ class Board:
     def add_piece(self, piece, coord):
         assert isinstance(piece, Piece)
         assert coord in self.board
-        if (square := self.board[coord]) is not None:
-            self.remove_piece(self.board[square])
+        if (piece_on_square := self.board[coord]) is not None:
+            self.remove_piece(piece_on_square)
         if piece in self.removed:
             self.removed.remove(piece)
         self.pieces[piece] = coord
