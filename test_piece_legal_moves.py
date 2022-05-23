@@ -1,5 +1,6 @@
 import pytest
-from chess import *
+from board import *
+from pieces import *
 
 
 def test_translate_algebraic():

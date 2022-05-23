@@ -1,5 +1,5 @@
-from _pytest.assertion import pytest_addoption
-from chess import *
+from board import *
+from pieces import *
 import pytest
 
 
