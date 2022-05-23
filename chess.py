@@ -126,7 +126,8 @@ class Piece:
 
     def move(self, coord):
         assert coord in self.legal_moves
-        assert self.board.board[coord].color != self.color, "cannot take own piece"
+        if self.board.board[coord]:
+            assert self.board.board[coord].color != self.color, "cannot take own piece"
         self.board.move_piece(self, coord)
 
     def __repr__(self):
@@ -335,7 +336,6 @@ class Pawn(Piece):
                 self.board.move_piece(self, coord)
                 self.board.remove_piece(board[side])
         else:
-            print(coord, translate_algebraic(self.pos, 0, 2 * dir))
             if coord == translate_algebraic(self.pos, 0, 2 * dir):
                 self.just_double_stepped = True
             Piece.move(self, coord)
