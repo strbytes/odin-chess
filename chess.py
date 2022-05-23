@@ -72,7 +72,7 @@ class Board:
         # threatened squares are named for the side being threatened
         threatened = {"black": set(), "white": set()}
         for piece in self.pieces:
-            for move in piece.legal_moves:
+            for move in piece.can_take:
                 threatened["black" if piece.color == "white" else "white"].add(move)
         return threatened
 
@@ -112,6 +112,11 @@ class Piece:
             return None
         return self.board.pieces[self]
 
+    @property
+    def can_take(self):
+        """Needed to for Pawn to override and not show double-steps in Board.threatened_squares"""
+        return self.legal_moves
+
     def board_display(self, white_background=False):
         """Returns a string depiction of the piece, using the alternate style
         of icon for white tiles."""
@@ -121,6 +126,7 @@ class Piece:
 
     def move(self, coord):
         assert coord in self.legal_moves
+        assert self.board.board[coord].color != self.color, "cannot take own piece"
         self.board.move_piece(self, coord)
 
     def __repr__(self):
@@ -132,7 +138,6 @@ class King(Piece):
 
     @property
     def legal_moves(self):
-        board = self.board.board
         assert self.pos, "can't check moves on a piece not on the board"
         moves = []
         for x in (-1, 0, 1):
@@ -140,8 +145,7 @@ class King(Piece):
                 if not (x == 0 and y == 0):
                     step = translate_algebraic(self.pos, x, y)
                     if step is not None:
-                        if board[step] is None or board[step].color != self.color:
-                            moves.append(step)
+                        moves.append(step)
         return moves
 
     @property
@@ -224,13 +228,15 @@ class Queen(Piece):
             for y in (-1, 0, 1):
                 if not (x == 0 and y == 0):
                     i = 1
+                    # keep looking further out in each direction until end of
+                    # board or a piece is hit
                     while True:
                         line = translate_algebraic(self.pos, x * i, y * i)
                         if line is not None and board[line] is None:
                             moves.append(line)
                             i += 1
                         else:
-                            if line is not None and board[line].color != self.color:
+                            if line is not None:
                                 moves.append(line)
                             break
         return moves
@@ -246,13 +252,15 @@ class Rook(Piece):
         moves = []
         for x, y in [(1, 0), (0, 1), (-1, 0), (0, -1)]:
             i = 1
+            # keep looking further out in each direction until end of
+            # board or a piece is hit
             while True:
                 line = translate_algebraic(self.pos, x * i, y * i)
                 if line is not None and board[line] is None:
                     moves.append(line)
                     i += 1
                 else:
-                    if line is not None and board[line].color != self.color:
+                    if line is not None:
                         moves.append(line)
                     break
         return moves
@@ -263,7 +271,6 @@ class Knight(Piece):
 
     @property
     def legal_moves(self):
-        board = self.board.board
         assert self.pos, "can't check moves on a piece not on the board"
         knight_moves = []
         for x in [-2, -1, 1, 2]:
@@ -271,10 +278,7 @@ class Knight(Piece):
                 if abs(x) != abs(y) and (
                     new_pos := translate_algebraic(self.pos, x, y)
                 ):
-                    if not board[new_pos]:
-                        knight_moves.append(new_pos)
-                    elif board[new_pos].color != self.color:
-                        knight_moves.append(new_pos)
+                    knight_moves.append(new_pos)
         return knight_moves
 
 
@@ -294,7 +298,7 @@ class Bishop(Piece):
                     moves.append(diag)
                     i += 1
                 else:
-                    if diag is not None and board[diag].color != self.color:
+                    if diag is not None:
                         moves.append(diag)
                     break
         return moves
@@ -343,21 +347,17 @@ class Pawn(Piece):
         assert self.pos, "can't check moves on a piece not on the board"
         moves = []
         one_step = translate_algebraic(self.pos, 0, dir)
-        diagonals = [translate_algebraic(self.pos, i, dir) for i in (-1, 1)]
         # move
         if one_step is not None and board[one_step] is None:
             moves.append(one_step)
             if not self.moved:
                 two_step = translate_algebraic(self.pos, 0, 2 * dir)
-                if two_step is not None and board[two_step] is None:
+                if two_step is not None:
                     moves.append(two_step)
         # take
+        diagonals = [translate_algebraic(self.pos, i, dir) for i in (-1, 1)]
         for diag in diagonals:
-            if (
-                diag is not None
-                and board[diag] is not None
-                and board[diag].color != self.color
-            ):
+            if diag is not None and board[diag] is not None:
                 moves.append(diag)
             # check for en passant
             elif diag is not None and board[diag] is None:
@@ -369,6 +369,17 @@ class Pawn(Piece):
                     and board[side].just_double_stepped == True
                 ):
                     moves.append(diag)
+        return moves
+
+    @property
+    def can_take(self):
+        """Return only squares actually threatened by pawn"""
+        dir = 1 if self.color == "white" else -1
+        moves = []
+        diagonals = [translate_algebraic(self.pos, i, dir) for i in (-1, 1)]
+        for diag in diagonals:
+            if diag is not None:
+                moves.append(diag)
         return moves
 
 
