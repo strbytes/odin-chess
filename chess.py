@@ -80,7 +80,7 @@ class Board:
         black_on_white = "\u001b[47m\u001b[30m"  # ]]
         reset = "\u001b[0m"  # ]
         string = ""
-        for y in range(8):
+        for y in reversed(range(8)):
             string += str(y + 1) + " --"
             for x in range(8):
                 string += black_on_white if (x + y) % 2 == 0 else ""
@@ -90,7 +90,7 @@ class Board:
                 else:
                     string += "  "
                 string += reset if (x + y) % 2 == 0 else ""
-            string += "\n" if y < 7 else "\n  *  " + " ".join("|" * 8)
+            string += "\n" if y > 0 else "\n  *  " + " ".join("|" * 8)
         string += "\n" + " " * 5 + " ".join(list("abcdefgh"))
         return string
 
