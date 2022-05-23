@@ -48,6 +48,8 @@ class Board:
         assert coord in self.board
         if (square := self.board[coord]) is not None:
             self.remove_piece(self.board[square])
+        if piece in self.removed:
+            self.removed.remove(piece)
         self.pieces[piece] = coord
         self.board[coord] = piece
 
