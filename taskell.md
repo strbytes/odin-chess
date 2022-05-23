@@ -1,20 +1,17 @@
 ## To Do
 
-- Minor issues
-    * [ ] Display board columns bottom to top (1 should be at bottom)
-    * [ ] update Piece.__repr__ to have a better message for piece with no pos
+- Game object
+    * [ ] manage turns
+    * [ ] manage checkmate
+    * [ ] work with Pawn to allow en passant only turn immediately after double step
+    * [ ] pawn promotion
+- Main game loop
+    * [ ] accept algebraic notation as moves
+    * [ ] display helpful messages for unallowed moves
 
 ## Doing
 
-- Add tests for Piece.move
-    * [x] Piece.move (most pieces)
-    * [x] Pawn.move (en passant)
-    * [ ] King.castle
-    * [ ] King.test_check
-- Piece.can_take needs to account for threats to squares with own pieces on them
-    > Can't just use legal_moves bc that won't stop a King from putting itself in check by taking a piece
-    * [ ] or maybe have legal_moves include own pieces but disallow moving into them?
-    * [ ] similar to how king legal_moves shows moves into check, only move actually checks for check
+- Move Pieces to module
 
 ## Done
 
@@ -45,3 +42,19 @@
     * [x] if not moved, identify queen side or king side based on position
     * [x] then check if same side squares are free
     * [x] if pass all these, return True, else False
+- Piece.can_take needs to account for threats to squares with own pieces on them
+    > Can't just use legal_moves bc that won't stop a King from putting itself in check by taking a piece
+    * [x] or maybe have legal_moves include own pieces but disallow moving into them?
+    * [x] similar to how king legal_moves shows moves into check, only move actually checks for check
+- Minor issues
+    * [x] Display board columns bottom to top (1 should be at bottom)
+    * [x] update Piece.__repr__ to have a better message for piece with no pos
+- Add tests for Piece.move
+    * [x] Piece.move (most pieces)
+    * [x] Pawn.move (en passant)
+    * [x] King.castle
+    * [x] King.test_check
+- prevent moving another piece and putting king in check
+    * [x] fix this to preview the whole move not just remove the piece
+    * [x] e.g. a pawn can step forward if it continues to block a rook
+    * [x] also taking a piece can remove a potential threat
