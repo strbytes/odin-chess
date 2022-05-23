@@ -130,6 +130,18 @@ class Piece:
         assert coord in self.legal_moves
         if self.board.board[coord]:
             assert self.board.board[coord].color != self.color, "cannot take own piece"
+        # test for discovered check
+        if self.piece != "king":
+            pos = self.pos
+            king = None
+            for piece in self.board.pieces:
+                if piece.piece == "king":
+                    king = piece
+            if king:
+                self.board.remove_piece(self)
+                in_check = king.in_check
+                self.board.add_piece(self, pos)
+                assert not in_check, f"moving {self} puts king in check"
         self.board.move_piece(self, coord)
 
     def __repr__(self):
