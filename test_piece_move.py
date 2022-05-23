@@ -174,7 +174,10 @@ def board_white_all(board_white_pawns):
         "kbishop": kb,
         "kknight": kk,
         "krook": kr,
-    } | {f"p{i}": board_white_pawns.board[ALGEBRAIC_X[i] + "2"] for i in range(8)}
+    } | {
+        f"p{ALGEBRAIC_X[i]}": board_white_pawns.board[ALGEBRAIC_X[i] + "2"]
+        for i in range(8)
+    }
 
 
 class TestKing:
@@ -189,3 +192,74 @@ class TestKing:
         with pytest.raises(AssertionError) as e:
             black_king.move("d3")
         assert "cannot move into check" in str(e.value)
+
+    def test_castle_qside(self, board_white_all):
+        board = board_white_all["board"]
+        qrook = board_white_all["qrook"]
+        qknight = board_white_all["qknight"]
+        qbishop = board_white_all["qbishop"]
+        queen = board_white_all["queen"]
+        king = board_white_all["king"]
+        with pytest.raises(ValueError) as e:
+            king.castle("queenside")
+        assert "cannot castle" in str(e.value)
+        board.remove_piece(queen)
+        board.remove_piece(qbishop)
+        with pytest.raises(ValueError) as e:
+            king.castle("queenside")
+        assert "cannot castle" in str(e.value)
+        board.remove_piece(qknight)
+        board.add_piece(black_pawn := Pawn(board, "black"), "c2")
+        with pytest.raises(ValueError) as e:
+            king.castle("queenside")
+        assert "cannot castle" in str(e.value)
+        board.remove_piece(black_pawn)
+        king.castle("queenside")
+        assert king.pos == "c1"
+        assert qrook.pos == "d1"
+
+    def test_castle_kside(self, board_white_all):
+        board = board_white_all["board"]
+        krook = board_white_all["krook"]
+        kknight = board_white_all["kknight"]
+        kbishop = board_white_all["kbishop"]
+        king = board_white_all["king"]
+        with pytest.raises(ValueError) as e:
+            king.castle("kingside")
+        assert "cannot castle" in str(e.value)
+        board.remove_piece(kbishop)
+        with pytest.raises(ValueError) as e:
+            king.castle("kingside")
+        assert "cannot castle" in str(e.value)
+        board.remove_piece(kknight)
+        board.add_piece(black_pawn := Pawn(board, "black"), "g2")
+        with pytest.raises(ValueError) as e:
+            king.castle("kingside")
+        assert "cannot castle" in str(e.value)
+        board.remove_piece(black_pawn)
+        king.castle("kingside")
+        assert king.pos == "g1"
+        assert krook.pos == "f1"
+
+    def test_discovered_check(self, board_white_all):
+        board = board_white_all["board"]
+        pawn_d = board_white_all["pd"]
+        pawn_e = board_white_all["pe"]
+        pawn_f = board_white_all["pf"]
+        board.add_piece(black_qbishop := Bishop(board, "black"), "c3")
+        board.add_piece(black_rook := Rook(board, "black"), "g3")
+        board.add_piece(black_kbishop := Bishop(board, "black"), "g3")
+        with pytest.raises(AssertionError) as e:
+            pawn_d.move("d3")
+        assert "king in check" in str(e.value)
+        pawn_d.move("c3")
+        assert pawn_d.pos == "c3"
+        assert black_qbishop in board.removed
+        pawn_e.move("e4")
+        assert pawn_e.pos == "e4"
+        with pytest.raises(AssertionError) as e:
+            pawn_f.move("f3")
+        assert "king in check" in str(e.value)
+        pawn_f.move("g3")
+        assert pawn_f.pos == "g3"
+        assert black_kbishop in board.removed
