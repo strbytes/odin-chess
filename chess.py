@@ -132,16 +132,19 @@ class Piece:
             assert self.board.board[coord].color != self.color, "cannot take own piece"
         # test for discovered check
         if self.piece != "king":
-            pos = self.pos
             king = None
             for piece in self.board.pieces:
-                if piece.piece == "king":
+                if piece.piece == "king" and piece.color == self.color:
                     king = piece
-            if king:
-                self.board.remove_piece(self)
-                in_check = king.in_check
-                self.board.add_piece(self, pos)
-                assert not in_check, f"moving {self} puts king in check"
+            if king:  # don't break tests that don't have a king on the board
+                pos = self.pos
+                other_piece = self.board.board[coord]
+                self.board.move_piece(self, coord)
+                if king.in_check:
+                    self.board.move_piece(self, pos)
+                    if other_piece:
+                        self.board.add_piece(other_piece, coord)
+                    raise AssertionError("moving {self} puts king in check")
         self.board.move_piece(self, coord)
 
     def __repr__(self):
