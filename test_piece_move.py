@@ -1,3 +1,4 @@
+from _pytest.assertion import pytest_addoption
 from chess import *
 import pytest
 
@@ -171,3 +172,48 @@ def test_threatened_squares(board_white_pawns):
         assert (
             square in board_white_pawns.threatened_squares["black"]
         ), f"expected {square} in threatened squares for black"
+
+
+@pytest.fixture
+def board_kings_and_pawns(board_white_pawns):
+    board_white_pawns.add_piece(wk := King(board_white_pawns, "white"), "e1")
+    board_white_pawns.add_piece(bk := King(board_white_pawns, "black"), "e4")
+    return {"board": board_white_pawns, "white_king": wk, "black_king": bk}
+
+
+@pytest.fixture
+def board_white_all(board_white_pawns):
+    board_white_pawns.add_piece(qr := Rook(board_white_pawns, "white"), "a1")
+    board_white_pawns.add_piece(qk := Knight(board_white_pawns, "white"), "b1")
+    board_white_pawns.add_piece(qb := Bishop(board_white_pawns, "white"), "c1")
+    board_white_pawns.add_piece(q := Queen(board_white_pawns, "white"), "d1")
+    board_white_pawns.add_piece(k := King(board_white_pawns, "white"), "e1")
+    board_white_pawns.add_piece(kb := Bishop(board_white_pawns, "white"), "f1")
+    board_white_pawns.add_piece(kk := Knight(board_white_pawns, "white"), "g1")
+    board_white_pawns.add_piece(kr := Rook(board_white_pawns, "white"), "h1")
+    return {
+        "board": board_white_pawns,
+        "qrook": qr,
+        "qknight": qk,
+        "qbishop": qb,
+        "queen": q,
+        "king": k,
+        "kbishop": kb,
+        "kknight": kk,
+        "krook": kr,
+    } | {f"p{i}": board_white_pawns.board[ALGEBRAIC_X[i] + "2"] for i in range(8)}
+
+
+class TestKing:
+    def test_move(self, board_kings_and_pawns):
+        board = board_kings_and_pawns["board"]
+        white_king = board_kings_and_pawns["white_king"]
+        black_king = board_kings_and_pawns["black_king"]
+        assert white_king.legal_moves == ["d1", "f1"]
+        white_king.move("d1")
+        assert board.pieces[white_king] == "d1"
+        black_king.move("d4")
+        assert board.pieces[white_king] == "d4"
+        with pytest.raises(AssertionError) as e:
+            black_king.move("d3")
+        assert "cannot move into check" in str(e.value)
