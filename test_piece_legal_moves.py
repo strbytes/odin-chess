@@ -125,7 +125,16 @@ class TestKnight:
             "e4",
             "e6",
         ]
-        assert black_knight.legal_moves == ["d4", "d6", "e3", "g3", "h4", "h6"]
+        assert black_knight.legal_moves == [
+            "d4",
+            "d6",
+            "e3",
+            "e7",
+            "g3",
+            "g7",
+            "h4",
+            "h6",
+        ]
 
 
 @pytest.fixture
@@ -155,6 +164,7 @@ class TestBishop:
         ]
         assert black_bishop.legal_moves == [
             "g6",
+            "h7",
             "g4",
             "h3",
             "e4",
@@ -162,6 +172,7 @@ class TestBishop:
             "c2",
             "b1",
             "e6",
+            "d7",
         ]
 
 
@@ -195,6 +206,7 @@ class TestRook:
             "g5",
             "h5",
             "f6",
+            "f7",
             "e5",
             "d5",
             "c5",
@@ -252,16 +264,19 @@ class TestQueen:
             "d5",
             "c5",
             "e6",
+            "d7",
             "f4",
             "f3",
             "f2",
             "f1",
             "f6",
+            "f7",
             "g4",
             "h3",
             "g5",
             "h5",
             "g6",
+            "h7",
         ]
 
 
@@ -302,7 +317,16 @@ class TestKing:
             "d4",
             "d5",
         ]
-        assert black_king.legal_moves == ["e5", "e6", "f5", "g5", "g6"]
+        assert black_king.legal_moves == [
+            "e5",
+            "e6",
+            "e7",
+            "f5",
+            "f7",
+            "g5",
+            "g6",
+            "g7",
+        ]
 
     def test_castle_no_check(self, board_white_backline):
         qside = {
