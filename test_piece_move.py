@@ -60,23 +60,14 @@ class TestBishop:
         board = board_bishops_and_pawns["board"]
         white_bishop = board_bishops_and_pawns["white_bishop"]
         black_bishop = board_bishops_and_pawns["black_bishop"]
-        assert (
-            len(white_bishop.legal_moves) == 0
-        ), "white bishop behind pawns should have no legal moves"
         black_bishop.move("e2")
         assert (
             board.board["e2"] == black_bishop
         ), "black bishop should be at e2 after move"
-        assert white_bishop.legal_moves == [
-            "e2"
-        ], "only legal move for white bishop should be e2"
         white_bishop.move("e2")
         assert (
             board.board["e2"] == white_bishop
         ), "white bishop should be at e2 after move"
-        assert (
-            "a6" in white_bishop.legal_moves
-        ), "white bishop should be able to move across board after taking black bishop"
         assert (
             black_bishop in board.removed
         ), "black bishop should be removed after being taken"
@@ -112,19 +103,10 @@ class TestRook:
         board = board_rooks_and_pawns["board"]
         white_rook = board_rooks_and_pawns["white_rook"]
         black_rook = board_rooks_and_pawns["black_rook"]
-        assert all(
-            [move[1] == "1" for move in white_rook.legal_moves]
-        ), "white rook behind pawns should have only horizontal legal moves"
         black_rook.move("h2")
         assert board.board["h2"] == black_rook, "black rook should be at h2 after move"
-        assert (
-            "h2" in white_rook.legal_moves
-        ), "h2 should be in legal moves for white rook after black rook takes pawn in front"
         white_rook.move("h2")
         assert board.board["h2"] == white_rook, "white rook should be at h2 after move"
-        assert (
-            "h8" in white_rook.legal_moves
-        ), "white rook should be able to move across board after taking black rook"
         assert (
             black_rook in board.removed
         ), "black rook should be removed after being taken"
@@ -142,23 +124,14 @@ class TestQueen:
         board = board_queens_and_pawns["board"]
         white_queen = board_queens_and_pawns["white_queen"]
         black_queen = board_queens_and_pawns["black_queen"]
-        assert all(
-            [move[1] == "1" for move in white_queen.legal_moves]
-        ), "white queen behind pawns should have only horizontal legal moves"
         black_queen.move("d2")
         assert (
             board.board["d2"] == black_queen
         ), "black queen should be at d2 after move"
-        assert (
-            "d2" in white_queen.legal_moves
-        ), "d2 should be in legal moves for white queen after black queen takes pawn in front"
         white_queen.move("d2")
         assert (
             board.board["d2"] == white_queen
         ), "white queen should be at d2 after move"
-        assert all(
-            [move in white_queen.legal_moves for move in ["a5", "d8", "h6"]]
-        ), "white queen should be able to move across board after taking black queen"
         assert (
             black_queen in board.removed
         ), "black queen should be removed after being taken"
@@ -209,11 +182,10 @@ class TestKing:
         board = board_kings_and_pawns["board"]
         white_king = board_kings_and_pawns["white_king"]
         black_king = board_kings_and_pawns["black_king"]
-        assert white_king.legal_moves == ["d1", "f1"]
         white_king.move("d1")
         assert board.pieces[white_king] == "d1"
         black_king.move("d4")
-        assert board.pieces[white_king] == "d4"
+        assert board.pieces[black_king] == "d4"
         with pytest.raises(AssertionError) as e:
             black_king.move("d3")
         assert "cannot move into check" in str(e.value)
