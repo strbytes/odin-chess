@@ -209,7 +209,7 @@ class King(Piece):
         return self.test_check(self.pos)
 
     def test_check(self, coord):
-        return coord in self.board.threatened_squares
+        return coord in self.board.threatened_squares[self.color]
 
 
 class Queen(Piece):
