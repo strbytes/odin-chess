@@ -1,26 +1,20 @@
 ## To Do
 
-- Add test_check to King
-    > Test if any square is threatened. can be called on a specific square to check if a move is possible, or check own square (in_check method?) if no argument
-- Add a method to Board that checks all legal moves and builds a dict every turn?
+- Minor issues
+    * [ ] Display board columns bottom to top (1 should be at bottom)
+    * [ ] update Piece.__repr__ to have a better message for piece with no pos
 
 ## Doing
 
 - Add tests for Piece.move
-    * [ ] Piece.move (most pieces)
-    * [ ] Pawn.move (en passant)
+    * [x] Piece.move (most pieces)
+    * [x] Pawn.move (en passant)
     * [ ] King.castle
     * [ ] King.test_check
-- Add subclasses for Piece types
-    * [x] Redefine basic class structure
-    * [x] King
-    * [ ] - test check
-    * [x] - Castling
-    * [x] Queen
-    * [x] Rook
-    * [x] Knight
-    * [x] Bishop
-    * [x] Pawn
+- Piece.can_take needs to account for threats to squares with own pieces on them
+    > Can't just use legal_moves bc that won't stop a King from putting itself in check by taking a piece
+    * [ ] or maybe have legal_moves include own pieces but disallow moving into them?
+    * [ ] similar to how king legal_moves shows moves into check, only move actually checks for check
 
 ## Done
 
@@ -29,8 +23,22 @@
     * [x] Add basic movement function to Board (just ability to move an existing piece to another location, with no constraints, overwriting any piece that is already there)
 - Add basic movement logic
     * [x] Piece types have movement logic
+- Add a method to Board that checks all legal moves and builds a dict every turn?
+- Add subclasses for Piece types
+    * [x] Redefine basic class structure
+    * [x] King
+    * [x] - test check
+    * [x] - Castling
+    * [x] Queen
+    * [x] Rook
+    * [x] Knight
+    * [x] Bishop
+    * [x] Pawn
+- Add test_check to King
+    > Test if any square is threatened. can be called on a specific square to check if a move is possible, or check own square (in_check method?) if no argument
 - Add can_castle to King
     > Dictionary by name in Player class?
+    * [x] King cannot castle if in check or pass through squares in check (not just final square)
     * [x] can_castle in King
     * [x] if king not moved:
     * [x] finds rooks through Board
