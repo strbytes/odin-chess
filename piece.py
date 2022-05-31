@@ -33,12 +33,20 @@ class Piece:
 
     @property
     def legal_moves(self):
-        # TEST
-        l = []
-        for x in range(8):
-            for y in range(8):
-                l.append((x, y))
-        return l
+        potential = []
+        for m in self.potential_moves:
+            board = self.player.board
+            x, y = m
+            if (current := board.board[x][y]) is None:
+                potential.append(m)
+            else:
+                if current.player.color != self.player.color:
+                    potential.append(m)
+        legal = []
+        for p in potential:
+            if board.test_move(self, p):
+                legal.append(p)
+        return legal
 
 
 class King(Piece):
