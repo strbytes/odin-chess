@@ -3,11 +3,12 @@ from piece import *
 
 class Game:
     def __init__(self):
-        self.board = Board()
+        self.board = Board(self)
 
 
 class Board:
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.board = []
         for x in range(8):
             self.board.append([])
