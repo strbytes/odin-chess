@@ -18,10 +18,17 @@ class Board:
 
     def add_piece(self, piece, coord):
         x, y = coord
+        assert piece.pos is None, "attempted to add a piece already on the board"
+        if current := self.board[x][y]:
+            current.player.removed.append(current)
+            current.pos = None
         self.board[x][y] = piece
+        if piece in piece.player.removed:
+            piece.player.removed.remove(piece)
         piece.pos = coord
 
     def move_piece(self, piece, coord):
+        assert piece.pos, "attempted to move a piece not on the board"
         x, y = coord
         if current := self.board[x][y]:
             current.player.removed.append(current)
