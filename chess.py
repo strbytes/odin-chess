@@ -95,5 +95,6 @@ class Player:
     def make_move(self, piece, coord):
         if coord in piece.legal_moves:
             self.board.move_piece(piece, coord)
+            piece.moved = True
         else:
             raise ValueError(f"Move not possible: {piece}, {coord}")
