@@ -39,6 +39,19 @@ class Board:
         self.board[x][y] = None
         piece.pos = coord
 
+    def test_move(self, piece, coord):
+        """Preview a move and return whether it results in self-check"""
+        player = piece.player
+        start_pos = piece.pos
+        x, y = coord
+        other = self.board[x][y]
+        self.move_piece(piece, coord)
+        valid = not player.king.in_check
+        self.move_piece(piece, start_pos)
+        if other:
+            self.add_piece(other, coord)
+        return valid
+
     def checkered_square(self, coord):
         x, y = coord
         return (x + y) % 2 == 0
