@@ -91,6 +91,8 @@ class Player:
             piece = p(self)
             self.board.add_piece(piece, coord)
             self.pieces.append(piece)
+            if isinstance(piece, King):
+                self.king = piece
 
     def make_move(self, piece, coord):
         if coord in piece.legal_moves:
