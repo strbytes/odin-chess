@@ -20,6 +20,17 @@ class Board:
         self.board[x][y] = piece
         piece.pos = coord
 
+    def move_piece(self, piece, coord):
+        x, y = coord
+        if current := self.board[x][y]:
+            current.player.removed.append(current)
+            current.pos = None
+        self.board[x][y] = piece
+        old_pos = piece.pos
+        x, y = old_pos
+        self.board[x][y] = None
+        piece.pos = coord
+
     def checkered_square(self, coord):
         x, y = coord
         return (x + y) % 2 == 0
@@ -73,8 +84,15 @@ class Player:
         self.board = board
         self.color = color
         self.pieces = []
+        self.removed = []
         setup = SETUP[self.color]
         for p, coord in setup:
             piece = p(self)
             self.board.add_piece(piece, coord)
             self.pieces.append(piece)
+
+    def make_move(self, piece, coord):
+        if coord in piece.legal_moves:
+            self.board.move_piece(piece, coord)
+        else:
+            raise ValueError(f"Move not possible: {piece}, {coord}")
