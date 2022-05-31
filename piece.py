@@ -102,3 +102,16 @@ class Pawn(Piece):
                         ):
                             moves.append((x + lateral, y + direction))
         return moves
+
+    @property
+    def threatens(self):
+        direction = 1 if self.player.color == "white" else -1
+        board = self.player.board.board
+        x, y = self.pos
+        threatens = []
+        for lateral in [-1, 1]:
+            if (
+                0 <= x + lateral <= 7 and 0 <= y + direction <= 7
+            ):  # piece not on edges of board
+                threatens.append((x + lateral, y + direction))
+        return threatens
