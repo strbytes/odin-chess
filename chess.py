@@ -17,34 +17,30 @@ class Board:
         self.players = {color: Player(self, color) for color in ["white", "black"]}
 
     def add_piece(self, piece, coord):
-        x, y = coord
         assert piece.pos is None, "attempted to add a piece already on the board"
-        if current := self.board[x][y]:
+        if current := self[coord]:
             current.player.removed.append(current)
             current.pos = None
-        self.board[x][y] = piece
+        self[coord] = piece
         if piece in piece.player.removed:
             piece.player.removed.remove(piece)
         piece.pos = coord
 
     def move_piece(self, piece, coord):
         assert piece.pos, "attempted to move a piece not on the board"
-        x, y = coord
-        if current := self.board[x][y]:
+        if current := self[coord]:
             current.player.removed.append(current)
             current.pos = None
-        self.board[x][y] = piece
+        self[coord] = piece
         old_pos = piece.pos
-        x, y = old_pos
-        self.board[x][y] = None
+        self[old_pos] = None
         piece.pos = coord
 
     def test_move(self, piece, coord):
         """Preview a move and return whether it results in self-check"""
         player = piece.player
         start_pos = piece.pos
-        x, y = coord
-        other = self.board[x][y]
+        other = self.board[coord]
         self.move_piece(piece, coord)
         valid = not player.king.in_check
         self.move_piece(piece, start_pos)
@@ -55,6 +51,20 @@ class Board:
     def checkered_square(self, coord):
         x, y = coord
         return (x + y) % 2 == 0
+
+    def __getitem__(self, i):
+        if isinstance(i, int):
+            return self.board[i]
+        if isinstance(i, tuple):
+            x, y = i
+            return self.board[x][y]
+
+    def __setitem__(self, i, item):
+        if isinstance(i, int):
+            return self.board[i]
+        if isinstance(i, tuple):
+            x, y = i
+            self.board[x][y] = item
 
     def __str__(self):
         black_on_white = "\u001b[47m\u001b[30m"  # ]]
