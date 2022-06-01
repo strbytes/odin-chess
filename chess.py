@@ -40,7 +40,7 @@ class Board:
         """Preview a move and return whether it results in self-check"""
         player = piece.player
         start_pos = piece.pos
-        other = self.board[coord]
+        other = self[coord]
         self.move_piece(piece, coord)
         valid = not player.king.in_check
         self.move_piece(piece, start_pos)
@@ -126,7 +126,14 @@ class Player:
 
     def make_move(self, piece, coord):
         if coord in piece.legal_moves:
+            assert piece in self.pieces, f"{repr(piece)} not in self.pieces"
             self.board.move_piece(piece, coord)
+            if piece.type == "pawn" and piece.moved == False:
+                if abs(piece.pos[1] - coord[1]) == 2:
+                    piece.double_step = self.board.game.turn
             piece.moved = True
         else:
-            raise ValueError(f"Move not possible: {piece}, {coord}")
+            raise ValueError(f"Move not possible: {repr(piece)}, {coord}")
+
+    def __repr__(self):
+        return f"{self.color} player"
