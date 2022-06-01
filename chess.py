@@ -25,17 +25,47 @@ def translate_algebraic(alg_coord):
     pieces = {"K": King, "Q": Queen, "R": Rook, "B": Bishop, "N": Knight}
     xs = "abcdefgh"
     ys = "12345678"
+    file, rank = None, None
     if len(alg_coord) == 2:
         piece = Pawn
         coord = alg_coord
     elif len(alg_coord) == 3:
-        piece = pieces[alg_coord[0]]
+        if alg_coord[0] in pieces:
+            piece = pieces[alg_coord[0]]
+        elif alg_coord[0] in xs:
+            piece = Pawn
+            file = xs.index(alg_coord[0])
+        elif alg_coord[0] in ys:
+            piece = Pawn
+            rank = ys.index(alg_coord[0])
+        else:
+            raise ValueError(
+                f"invalid character {alg_coord[0]} in coordinate {alg_coord}"
+            )
         coord = alg_coord[1:]
+    elif len(alg_coord) == 4:
+        piece = pieces[alg_coord[0]]
+        if alg_coord[1] in xs:
+            file = xs.index(alg_coord[1])
+        elif alg_coord[1] in ys:
+            rank = ys.index(alg_coord[1])
+        else:
+            raise ValueError(
+                f"invalid character {alg_coord[1]} in coordinate {alg_coord}"
+            )
+        coord = alg_coord[2:]
+    elif len(alg_coord) == 5:
+        piece = pieces[alg_coord[0]]
+        if alg_coord[1] in xs and alg_coord[2] in ys:
+            file, rank = xs.index(alg_coord[1]), ys.index(alg_coord[2])
+        else:
+            raise ValueError(
+                f"invalid characters {alg_coord[1:3]} in coordinate {alg_coord}"
+            )
+        coord = alg_coord[3:]
     else:
-        raise ValueError(
-            f"algebraic coordinates should be 2 or 3 characters long, not {len(alg_coord)}"
-        )
-    return piece, (xs.index(coord[0]), ys.index(coord[1]))
+        raise ValueError(f"invalid coordinate {alg_coord}")
+    return piece, (xs.index(coord[0]), ys.index(coord[1])), file, rank
 
 
 class Board:
