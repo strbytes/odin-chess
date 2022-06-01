@@ -68,6 +68,17 @@ class Bishop(Piece):
 class Knight(Piece):
     type = "knight"
 
+    @property
+    def potential_moves(self):
+        assert self.pos, "potential_moves called on a piece with no position"
+        x, y = self.pos
+        moves = []
+        for dx in [-2, -1, 1, 2]:
+            for dy in [-2, -1, 1, 2]:
+                if abs(dx) != abs(dy) and 0 <= x + dx <= 7 and 0 <= y + dy <= 7:
+                    moves.append((x + dx, y + dy))
+        return moves
+
 
 class Pawn(Piece):
     type = "pawn"
