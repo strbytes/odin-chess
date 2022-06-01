@@ -4,6 +4,21 @@ from piece import *
 class Game:
     def __init__(self):
         self.board = Board(self)
+        self.turn = 0
+
+    @property
+    def whose_turn(self):
+        return self.board.players["white" if self.turn % 2 == 0 else "black"]
+
+    def play_turn(self):
+        print(self.board)
+        player = self.whose_turn
+        print(player, ", it's your turn!")
+        while True:
+            try:
+                pass
+            except:
+                pass
 
 
 def translate_algebraic(alg_coord):
