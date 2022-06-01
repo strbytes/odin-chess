@@ -106,6 +106,13 @@ class Board:
         self[old_pos] = None
         piece.pos = coord
 
+    def remove_piece(self, coord):
+        piece = self[coord]
+        assert piece, f"attempted to remove piece from empty square {coord}"
+        self[coord] = None
+        piece.pos = None
+        piece.player.removed.append(piece)
+
     def test_move(self, piece, coord):
         """Preview a move and return whether it results in self-check"""
         player = piece.player
