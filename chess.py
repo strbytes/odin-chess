@@ -16,9 +16,12 @@ class Game:
         print(player, ", it's your turn!")
         while True:
             try:
-                pass
-            except:
-                pass
+                play = input("Enter a move using algebraic notation > ")
+                player.make_move(*translate_algebraic(play))
+                self.turn += 1
+                break
+            except (AssertionError, ValueError) as e:
+                print(e)
 
 
 def translate_algebraic(alg_coord):
