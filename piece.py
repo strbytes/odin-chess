@@ -31,6 +31,9 @@ class Piece:
             return ICONS[OPPOSITE_COLOR[self.player.color]][self.type]
         return ICONS[self.player.color][self.type]
 
+    def __repr__(self):
+        return f"{self.player.color} {self.type} at {self.pos}"
+
     @property
     def legal_moves(self):
         potential = []
