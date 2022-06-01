@@ -198,10 +198,10 @@ class Player:
                 can_move.append(p)
         if len(can_move) == 1:
             piece = can_move[0]
-            self.board.move_piece(piece, coord)
             if piece.type == "pawn" and piece.moved == False:
                 if abs(piece.pos[1] - coord[1]) == 2:
-                    type.double_step = self.board.game.turn
+                    piece.double_step = self.board.game.turn
+            self.board.move_piece(piece, coord)
             piece.moved = True
         elif len(can_move) > 1:
             raise ValueError(f"multiple pieces can make that move: {can_move}")
