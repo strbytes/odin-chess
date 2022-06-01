@@ -39,8 +39,7 @@ class Piece:
         potential = []
         for m in self.potential_moves:
             board = self.player.board
-            x, y = m
-            if (current := board.board[x][y]) is None:
+            if (current := board[m]) is None:
                 potential.append(m)
             else:
                 if current.player.color != self.player.color:
@@ -97,39 +96,44 @@ class Pawn(Piece):
     @property
     def potential_moves(self):
         direction = 1 if self.player.color == "white" else -1
-        board = self.player.board.board
+        board = self.player.board
         assert self.pos, "potential_moves called on a piece with no position"
         moves = []
         x, y = self.pos
         if 0 <= y + direction <= 7:  # piece not at end of board
-            if board[x][y + direction] is None:
-                moves.append((x, y + direction))
-                if not self.moved and board[x][y + 2 * direction] is None:
-                    moves.append((x, y + 2 * direction))
+            one_step = (x, y + direction)
+            if board[one_step] is None:
+                moves.append(one_step)
+                two_step = (x, y + 2 * direction)
+                if not self.moved and board[two_step] is None:
+                    moves.append(two_step)
             for lateral in [-1, 1]:
                 if 0 <= x + lateral <= 7:  # piece not at side of board
-                    if board[x + lateral][y + direction] is not None:
-                        moves.append((x + lateral, y + direction))
+                    diagonal = (x + lateral, y + direction)
+                    if board[diagonal] is not None:
+                        moves.append(diagonal)
                     else:
-                        side = board[x + lateral][y]
+                        side = (x + lateral, y)
+                        side_piece = board[side]
                         if (
-                            side is not None
-                            and side.player.color != self.player.color
-                            and side.type == "pawn"
-                            and side.double_step == self.player.board.game.turn - 1
+                            side_piece is not None
+                            and side_piece.player.color != self.player.color
+                            and side_piece.type == "pawn"
+                            and side_piece.double_step
+                            == self.player.board.game.turn - 1
                         ):
-                            moves.append((x + lateral, y + direction))
+                            moves.append(side)
         return moves
 
     @property
     def threatens(self):
         direction = 1 if self.player.color == "white" else -1
-        board = self.player.board.board
         x, y = self.pos
         threatens = []
         for lateral in [-1, 1]:
+            diagonal = (x + lateral, y + direction)
             if (
                 0 <= x + lateral <= 7 and 0 <= y + direction <= 7
             ):  # piece not on edges of board
-                threatens.append((x + lateral, y + direction))
+                threatens.append(diagonal)
         return threatens
