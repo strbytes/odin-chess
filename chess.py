@@ -10,9 +10,14 @@ class Game:
     def whose_turn(self):
         return self.board.players["white" if self.turn % 2 == 0 else "black"]
 
-    def play_turn(self):
-        print(self.board)
+    def play_turn(self, coord=None):
         player = self.whose_turn
+        if coord:
+            # automatic turn play via function call for testing purposes
+            player.make_move(*translate_algebraic(coord))
+            self.turn += 1
+            return
+        print(self.board)
         print(player, ", it's your turn!")
         while True:
             try:
