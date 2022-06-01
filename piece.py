@@ -122,7 +122,7 @@ class Pawn(Piece):
                             and side_piece.double_step
                             == self.player.board.game.turn - 1
                         ):
-                            moves.append(side)
+                            moves.append(diagonal)
         return moves
 
     @property
