@@ -213,9 +213,15 @@ class Player:
                 can_move.append(p)
         if len(can_move) == 1:
             piece = can_move[0]
-            if piece.type == "pawn" and piece.moved == False:
-                if abs(piece.pos[1] - coord[1]) == 2:
+            if piece.type == "pawn":
+                if piece.moved == False and abs(piece.pos[1] - coord[1]) == 2:
                     piece.double_step = self.board.game.turn
+                # if x axis changes, means diagonal step
+                elif abs(piece.pos[0] - coord[0]) != 0:
+                    # if square being moved to is empty, must be en passant
+                    if self.board[coord] is None:
+                        # remove pawn being taken en passant
+                        self.board.remove_piece((coord[0], piece.pos[1]))
             self.board.move_piece(piece, coord)
             piece.moved = True
         elif len(can_move) > 1:
