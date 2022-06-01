@@ -6,6 +6,23 @@ class Game:
         self.board = Board(self)
 
 
+def translate_algebraic(alg_coord):
+    pieces = {"K": King, "Q": Queen, "R": Rook, "B": Bishop, "N": Knight}
+    xs = "abcdefgh"
+    ys = "12345678"
+    if len(alg_coord) == 2:
+        piece = Pawn
+        coord = alg_coord
+    elif len(alg_coord) == 3:
+        piece = pieces[alg_coord[0]]
+        coord = alg_coord[1:]
+    else:
+        raise ValueError(
+            f"algebraic coordinates should be 2 or 3 characters long, not {len(alg_coord)}"
+        )
+    return piece, (xs.index(coord[0]), ys.index(coord[1]))
+
+
 class Board:
     def __init__(self, game):
         self.game = game
