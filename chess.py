@@ -186,16 +186,22 @@ class Player:
             if isinstance(piece, King):
                 self.king = piece
 
-    def make_move(self, piece, coord):
-        if coord in piece.legal_moves:
-            assert piece in self.pieces, f"{repr(piece)} not in self.pieces"
+    def make_move(self, type, coord, file=None, rank=None):
+        can_move = []
+        for p in self.pieces:
+            if isinstance(p, type) and coord in p.legal_moves:
+                can_move.append(p)
+        if len(can_move) == 1:
+            piece = can_move[0]
             self.board.move_piece(piece, coord)
             if piece.type == "pawn" and piece.moved == False:
                 if abs(piece.pos[1] - coord[1]) == 2:
-                    piece.double_step = self.board.game.turn
+                    type.double_step = self.board.game.turn
             piece.moved = True
+        elif len(can_move) > 1:
+            raise ValueError(f"multiple pieces can make that move: {can_move}")
         else:
-            raise ValueError(f"Move not possible: {repr(piece)}, {coord}")
+            raise ValueError(f"No pieces of type {type} can move to {coord}")
 
     def __repr__(self):
         return f"{self.color} player"
