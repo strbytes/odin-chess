@@ -123,6 +123,8 @@ class Board:
         if isinstance(i, tuple):
             x, y = i
             return self.board[x][y]
+        if isinstance(i, str):
+            return self.board["abcdefgh".index(i[0])]["12345678".index(i[1])]
 
     def __setitem__(self, i, item):
         if isinstance(i, int):
