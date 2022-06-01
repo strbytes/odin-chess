@@ -55,6 +55,10 @@ class Piece:
 class King(Piece):
     type = "king"
 
+    @property
+    def in_check(self):
+        return False
+
 
 class Queen(Piece):
     type = "queen"
