@@ -153,27 +153,27 @@ class Board:
 
 SETUP = {
     "white": {
-        (Rook, (0, 0)),
-        (Knight, (1, 0)),
-        (Bishop, (2, 0)),
-        (Queen, (3, 0)),
-        (King, (4, 0)),
-        (Bishop, (5, 0)),
-        (Knight, (6, 0)),
-        (Rook, (7, 0)),
+        "qrook": (Rook, (0, 0)),
+        "qknight": (Knight, (1, 0)),
+        "qbishop": (Bishop, (2, 0)),
+        "queen": (Queen, (3, 0)),
+        "king": (King, (4, 0)),
+        "kbishop": (Bishop, (5, 0)),
+        "kknight": (Knight, (6, 0)),
+        "krook": (Rook, (7, 0)),
     }
-    | {(Pawn, (i, 1)) for i in range(8)},
+    | {f"pawn_{i}": (Pawn, (i, 1)) for i in range(8)},
     "black": {
-        (Rook, (0, 7)),
-        (Knight, (1, 7)),
-        (Bishop, (2, 7)),
-        (Queen, (3, 7)),
-        (King, (4, 7)),
-        (Bishop, (5, 7)),
-        (Knight, (6, 7)),
-        (Rook, (7, 7)),
+        "qrook": (Rook, (0, 7)),
+        "qknight": (Knight, (1, 7)),
+        "qbishop": (Bishop, (2, 7)),
+        "queen": (Queen, (3, 7)),
+        "king": (King, (4, 7)),
+        "kbishop": (Bishop, (5, 7)),
+        "kknight": (Knight, (6, 7)),
+        "krook": (Rook, (7, 7)),
     }
-    | {(Pawn, (i, 6)) for i in range(8)},
+    | {f"pawn_{i}": (Pawn, (i, 6)) for i in range(8)},
 }
 
 
@@ -182,12 +182,15 @@ class Player:
         self.board = board
         self.color = color
         self.pieces = []
+        self.pieces_dict = {}
         self.removed = []
         setup = SETUP[self.color]
-        for p, coord in setup:
+        for entry in setup:
+            p, coord = setup[entry]
             piece = p(self)
             self.board.add_piece(piece, coord)
             self.pieces.append(piece)
+            self.pieces_dict[entry] = piece
             if isinstance(piece, King):
                 self.king = piece
 
@@ -207,6 +210,9 @@ class Player:
             raise ValueError(f"multiple pieces can make that move: {can_move}")
         else:
             raise ValueError(f"No pieces of type {type} can move to {coord}")
+
+    def __getitem__(self, item):
+        return self.pieces_dict[item]
 
     def __repr__(self):
         return f"{self.color} player"
