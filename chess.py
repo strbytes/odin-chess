@@ -304,6 +304,14 @@ class Player:
             squares.update(piece.threatens)
         return squares
 
+    @property
+    def legal_moves_all(self):
+        legal = {}
+        for piece in self.pieces:
+            if moves := piece.legal_moves:
+                legal[piece] = moves
+        return legal
+
     def __getitem__(self, item):
         return self.pieces_dict[item]
 

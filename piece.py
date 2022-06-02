@@ -36,6 +36,8 @@ class Piece:
 
     @property
     def legal_moves(self):
+        if not self.pos:
+            return []
         potential = []
         for m in self.potential_moves:
             board = self.player.board
@@ -59,6 +61,11 @@ class King(Piece):
         return False
 
     @property
+    def potential_moves(self):
+        # TODO
+        return []
+
+    @property
     def threatens(self):
         if not self.pos:
             return []
@@ -70,6 +77,11 @@ class Queen(Piece):
     type = "queen"
 
     @property
+    def potential_moves(self):
+        # TODO
+        return []
+
+    @property
     def threatens(self):
         if not self.pos:
             return []
@@ -79,6 +91,11 @@ class Queen(Piece):
 
 class Rook(Piece):
     type = "rook"
+
+    @property
+    def potential_moves(self):
+        # TODO
+        return []
 
     @property
     def threatens(self):
