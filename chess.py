@@ -119,12 +119,22 @@ class Board:
         """Preview a move and return whether it results in self-check"""
         player = piece.player
         start_pos = piece.pos
-        other = self[coord]
+        if (
+            isinstance(piece, Pawn)
+            and abs(piece.pos[0] - coord[0]) != 0
+            and self[coord] == None
+        ):
+            other_coord = (coord[0], piece.pos[1])
+            other = self[other_coord]
+            self.remove_piece(other)
+        else:
+            other = self[coord]
+            other_coord = coord
         self.move_piece(piece, coord)
         valid = not player.king.in_check
         self.move_piece(piece, start_pos)
         if other:
-            self.add_piece(other, coord)
+            self.add_piece(other, other_coord)
         return valid
 
     def checkered_square(self, coord):
