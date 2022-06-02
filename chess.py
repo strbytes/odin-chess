@@ -289,8 +289,13 @@ class Player:
         raise NotImplementedError
 
     def promote(self, piece, coord, promotion):
-        # TODO
-        raise NotImplementedError
+        # use a taken piece if possible
+        for p in self.removed:
+            if isinstance(p, promotion):
+                self.board.add_piece(p, coord)
+                return
+        self.board.add_piece(promotion(self), coord)
+        self.board.remove_piece(piece)
 
     def __getitem__(self, item):
         return self.pieces_dict[item]
