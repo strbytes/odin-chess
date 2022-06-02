@@ -106,9 +106,11 @@ class Board:
         self[old_pos] = None
         piece.pos = coord
 
-    def remove_piece(self, coord):
-        piece = self[coord]
-        assert piece, f"attempted to remove piece from empty square {coord}"
+    def remove_piece(self, piece):
+        if isinstance(piece, tuple):
+            piece = self[piece]
+            assert piece, f"attempted to remove piece from empty square {piece}"
+        coord = piece.pos
         self[coord] = None
         piece.pos = None
         piece.player.removed.append(piece)
