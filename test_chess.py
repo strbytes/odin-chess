@@ -37,13 +37,9 @@ def test_empty_board(empty_board):
     assert len(black.removed) == 16
 
 
-class TestGame:
-    game = Game()
-    board = game.board
-    white, black = game.board.players["white"], game.board.players["black"]
 
 
-class TestBishop(TestGame):
+class TestBishop:
     def test_empty(self, empty_board):
         game, board, white, black = empty_board
         board.add_piece(white["qbishop"], (3, 3))
@@ -74,7 +70,11 @@ class TestBishop(TestGame):
         assert (4, 7) not in white["kbishop"].legal_moves
 
 
-class TestPawn(TestGame):
+class TestPawn:
+    game = Game()
+    board = game.board
+    white, black = game.board.players["white"], game.board.players["black"]
+
     def test_double_step(self):
         # test white pawn double step
         self.game.play_turn("d4")
