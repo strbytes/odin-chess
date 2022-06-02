@@ -1,25 +1,22 @@
 ## To Do
 
 - Main game loop
-    * [ ] accept algebraic notation as moves
+    * [x] accept algebraic notation as moves
     * [ ] display helpful messages for unallowed moves
 - check/mate/draw
     > Game method to test for check and draw
     * [ ] need to be able to access each player's king every turn and test for check (to alert the player, the Piece movement logic already won't allow moves that break the check rule)
     * [ ] if king is in check, test if the king has any moves available or if another piece can take or block the checker
 - Game object
-    * [ ] manage turns
+    * [x] manage turns
     * [ ] manage checkmate
-    * [ ] work with Pawn to allow en passant only turn immediately after double step
-    * [ ] pawn promotion
+    * [x] work with Pawn to allow en passant only turn immediately after double step
+    * [x] pawn promotion
+- Display removed pieces in board string
+- Test en-passant King-in-check special case
 
 ## Doing
 
-- Refactor
-    > Rebuild whole game structure to be more logical
-    * [ ] Game creates Board
-    * [ ] Board creates Players
-    * [ ] Players create Pieces and add to board
 - Rework legal_moves
     > Need to be able to see only truly legal moves available to every piece every turn in order to evaluate checkmate and draw
     * [ ] needs to filter for moves that would check self (this logic is currently in the move method)
@@ -73,3 +70,9 @@
     * [x] e.g. a pawn can step forward if it continues to block a rook
     * [x] also taking a piece can remove a potential threat
 - Move Pieces to module
+- Refactor
+    > Rebuild whole game structure to be more logical
+    * [x] Game creates Board
+    * [x] Board creates Players
+    * [x] Players create Pieces and add to board
+- Pawn promotion
