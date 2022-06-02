@@ -153,9 +153,11 @@ class Board:
     def __setitem__(self, i, item):
         if isinstance(i, int):
             return self.board[i]
-        if isinstance(i, tuple):
+        elif isinstance(i, tuple):
             x, y = i
             self.board[x][y] = item
+        else:
+            raise IndexError(f"invalid format to access board: {i}")
 
     def __str__(self):
         black_on_white = "\u001b[47m\u001b[30m"  # ]]
