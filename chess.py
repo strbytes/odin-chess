@@ -223,7 +223,7 @@ class Player:
     def make_move(self, type, coord, file=None, rank=None):
         can_move = []
         for p in self.pieces:
-            if isinstance(p, type) and coord in p.legal_moves:
+            if isinstance(p, type) and p.pos and coord in p.legal_moves:
                 can_move.append(p)
         if len(can_move) == 1:
             piece = can_move[0]
