@@ -2,6 +2,16 @@ from chess import *
 import pytest
 
 
+def translate_coord(coord):
+    """Translate a tuple coord into an algebraic coord and vice-versa"""
+    xs = "abcdefgh"
+    ys = "12345678"
+    if isinstance(coord, str):
+        return xs.index(coord[0]), ys.index(coord[1])
+    else:
+        return xs[coord[0]], ys[coord[1]]
+
+
 @pytest.fixture
 def new_game():
     g = Game()
