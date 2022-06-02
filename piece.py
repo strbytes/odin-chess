@@ -58,17 +58,45 @@ class King(Piece):
     def in_check(self):
         return False
 
+    @property
+    def threatens(self):
+        if not self.pos:
+            return []
+        # TODO
+        return []
+
 
 class Queen(Piece):
     type = "queen"
+
+    @property
+    def threatens(self):
+        if not self.pos:
+            return []
+        # TODO
+        return []
 
 
 class Rook(Piece):
     type = "rook"
 
+    @property
+    def threatens(self):
+        if not self.pos:
+            return []
+        # TODO
+        return []
+
 
 class Bishop(Piece):
     type = "bishop"
+
+    @property
+    def threatens(self):
+        if not self.pos:
+            return []
+        # TODO
+        return []
 
 
 class Knight(Piece):
@@ -84,6 +112,12 @@ class Knight(Piece):
                 if abs(dx) != abs(dy) and 0 <= x + dx <= 7 and 0 <= y + dy <= 7:
                     moves.append((x + dx, y + dy))
         return moves
+
+    @property
+    def threatens(self):
+        if not self.pos:
+            return []
+        return self.potential_moves
 
 
 class Pawn(Piece):
@@ -128,6 +162,8 @@ class Pawn(Piece):
     @property
     def threatens(self):
         direction = 1 if self.player.color == "white" else -1
+        if not self.pos:
+            return []
         x, y = self.pos
         threatens = []
         for lateral in [-1, 1]:

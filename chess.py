@@ -297,6 +297,13 @@ class Player:
         self.board.add_piece(promotion(self), coord)
         self.board.remove_piece(piece)
 
+    @property
+    def threatens_all(self):
+        squares = set()
+        for piece in self.pieces:
+            squares.update(piece.threatens)
+        return squares
+
     def __getitem__(self, item):
         return self.pieces_dict[item]
 
