@@ -37,11 +37,13 @@ def test_empty_board(empty_board):
     assert len(black.removed) == 16
 
 
-class TestPawn:
+class TestGame:
     game = Game()
     board = game.board
     white, black = game.board.players["white"], game.board.players["black"]
 
+
+class TestPawn(TestGame):
     def test_double_step(self):
         # test white pawn double step
         self.game.play_turn("d4")
