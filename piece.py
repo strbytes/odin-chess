@@ -94,15 +94,24 @@ class Rook(Piece):
 
     @property
     def potential_moves(self):
-        # TODO
-        return []
+        assert self.pos, "potential_moves called on a piece with no position"
+        x, y = self.pos
+        moves = []
+        for dx, dy in [(1, 0), (0, -1), (-1, -0), (-0, 1)]:
+            i = 1
+            while 0 <= x + dx * i <= 7 and 0 <= y + dy * i <= 7:
+                coord = (x + dx * i, y + dy * i)
+                moves.append(coord)
+                i += 1
+                if self.player.board[coord] is not None:
+                    break
+        return moves
 
     @property
     def threatens(self):
         if not self.pos:
             return []
-        # TODO
-        return []
+        return self.potential_moves
 
 
 class Bishop(Piece):
