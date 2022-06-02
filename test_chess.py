@@ -54,3 +54,40 @@ def test_pawn(new_game):
     game.play_turn("e7")
     game.play_turn("c3")
     assert board["c3"].legal_moves == [(1, 1)]
+
+
+@pytest.fixture
+def empty_board(new_game):
+    game, board, white, black = new_game
+    for p in white.pieces + black.pieces:
+        board.remove_piece(p)
+    return game, board, white, black
+
+
+def test_empty_board(empty_board):
+    game, board, white, black = empty_board
+    for x in range(8):
+        for y in range(8):
+            assert board[x][y] == None
+
+
+@pytest.fixture
+def en_passant_setup(empty_board):
+    game, board, white, black = empty_board
+    board.add_piece(white["king"], (0, 0))
+    board.add_piece(black["king"], (7, 3))
+    board.add_piece(white["qrook"], (0, 3))
+    board.add_piece(black["qbishop"], (7, 7))
+    board.add_piece(white["pawn_1"], (4, 3))
+    white["pawn_1"].moved = True
+    white["pawn_1"].double_step = 0
+    black["pawn_1"].moved = True
+    black["pawn_1"].double_step = 0
+    board.add_piece(black["pawn_1"], (3, 3))
+    game.turn = 1
+    return game, board, white, black
+
+
+def test_en_passant_special_case(en_passant_setup):
+    game, board, white, black = en_passant_setup
+    breakpoint()
