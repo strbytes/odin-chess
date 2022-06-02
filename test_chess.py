@@ -43,6 +43,37 @@ class TestGame:
     white, black = game.board.players["white"], game.board.players["black"]
 
 
+class TestBishop(TestGame):
+    def test_empty(self, empty_board):
+        game, board, white, black = empty_board
+        board.add_piece(white["qbishop"], (3, 3))
+        assert white["qbishop"].legal_moves == [
+            (4, 4),
+            (5, 5),
+            (6, 6),
+            (7, 7),
+            (4, 2),
+            (5, 1),
+            (6, 0),
+            (2, 2),
+            (1, 1),
+            (0, 0),
+            (2, 4),
+            (1, 5),
+            (0, 6),
+        ]
+
+    def test_game(self, new_game):
+        game, board, white, black = new_game
+        game.play_turn("e4")
+        assert (0, 5) in white["kbishop"].legal_moves
+        game.play_turn("b5")
+        assert (0, 5) in black["qbishop"].legal_moves
+        game.play_turn("Bb5")
+        assert (3, 6) in white["kbishop"].legal_moves
+        assert (4, 7) not in white["kbishop"].legal_moves
+
+
 class TestPawn(TestGame):
     def test_double_step(self):
         # test white pawn double step
