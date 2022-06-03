@@ -47,6 +47,19 @@ def test_empty_board(empty_board):
     assert len(black.removed) == 16
 
 
+class TestGame:
+    def test_game_over(self, empty_board):
+        game, board, white, black = empty_board
+        board.add_piece(white["king"], (3, 3))
+        board.add_piece(black["qrook"], (2, 2))
+        board.add_piece(black["krook"], (4, 4))
+        board.add_piece(black["pawn_0"], (1, 3))
+        board.add_piece(black["pawn_1"], (5, 5))
+        assert game.game_over == "stalemate"
+        board.add_piece(black["pawn_2"], (2, 4))
+        assert game.game_over == "checkmate"
+
+
 class TestKing:
     def test_empty(self, empty_board):
         game, board, white, black = empty_board

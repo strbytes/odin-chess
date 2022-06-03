@@ -10,8 +10,26 @@ class Game:
     def whose_turn(self):
         return self.board.players["white" if self.turn % 2 == 0 else "black"]
 
+    @property
+    def game_over(self):
+        player = self.whose_turn
+        if not player.legal_moves_all:
+            if player.king.in_check:
+                return "checkmate"
+            else:
+                return "stalemate"
+
     def play_turn(self, coord=None):
         player = self.whose_turn
+        if self.game_over == "checkmate":
+            print(f"Checkmate! {player.other_player} wins!")
+            return
+        elif self.game_over == "stalemate":
+            print("Stalemate! Game ends in a draw.")
+            return
+        if player.king.in_check:
+            print("Check!")
+            print(str(player) + ", you are in check.")
         if coord:
             # automatic turn play via function call for testing purposes
             player.make_move(**translate_algebraic(coord))
