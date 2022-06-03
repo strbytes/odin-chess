@@ -244,6 +244,8 @@ class TestPawn:
         self.game.play_turn("f8Q")
         assert isinstance(self.board["f8"], Queen)
         assert self.board["f8"].player.color == "white"
+        self.game.play_turn("Kf8")
+        self.game.play_turn("f4")
         with pytest.raises(ValueError) as e:
             self.game.play_turn("b2Q")
         assert "inappropriate" in str(e.value)
