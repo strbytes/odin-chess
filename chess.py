@@ -293,8 +293,21 @@ class Player:
             raise ValueError(f"No pieces of type {piece_type} can move to {coord}")
 
     def castle(self, castle_side):
-        # TODO
-        raise NotImplementedError
+        assert castle_side in ["queenside", "kingside"]
+        if castle_side in self.king.can_castle:
+            rank = self.king.pos[1]
+            if castle_side == "queenside":
+                self.board.move_piece(self.king, (2, rank))
+                self.king.moved = True
+                self.board.move_piece(self["qrook"], (1, rank))
+                self["qrook"].moved = True
+            elif castle_side == "queenside":
+                self.board.move_piece(self.king, (6, rank))
+                self.king.moved = True
+                self.board.move_piece(self["qrook"], (5, rank))
+                self["qrook"].moved = True
+        else:
+            raise ValueError(f"cannot castle {castle_side}")
 
     def promote(self, piece, coord, promotion):
         # use a taken piece if possible

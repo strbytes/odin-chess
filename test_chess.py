@@ -93,6 +93,18 @@ class TestKing:
         white["krook"].moved = True
         assert white.king.can_castle == []
 
+    def test_castle(self, new_game):
+        game, board, white, black = new_game
+        with pytest.raises(ValueError) as e:
+            game.play_turn("O-O-O")
+        assert "cannot castle" in str(e.value)
+        board.remove_piece(white["queen"])
+        board.remove_piece(white["qbishop"])
+        board.remove_piece(white["qknight"])
+        game.play_turn("O-O-O")
+        assert white.king.pos == (2, 0)
+        assert white["qrook"].pos == (1, 0)
+
 
 class TestQueen:
     def test_empty(self, empty_board):
