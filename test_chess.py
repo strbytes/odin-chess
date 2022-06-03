@@ -78,6 +78,21 @@ class TestKing:
         board.add_piece(black["pawn_1"], (4, 4))
         black.promote(black["pawn_1"], (4, 4), Queen)
 
+    def test_can_castle(self, new_game):
+        game, board, white, black = new_game
+        assert white.king.can_castle == []
+        board.remove_piece(white["queen"])
+        board.remove_piece(white["qbishop"])
+        board.remove_piece(white["qknight"])
+        assert white.king.can_castle == ["queenside"]
+        board.move_piece(black["pawn_1"], (2, 1))
+        assert white.king.can_castle == []
+        board.remove_piece(white["kknight"])
+        board.remove_piece(white["kbishop"])
+        assert white.king.can_castle == ["kingside"]
+        white["krook"].moved = True
+        assert white.king.can_castle == []
+
 
 class TestQueen:
     def test_empty(self, empty_board):
@@ -271,7 +286,6 @@ class TestPawn:
         game, board, white, black = en_passant_setup
         assert translate_coord("d5") not in white["pawn_1"].legal_moves
         assert translate_coord("e3") not in black["pawn_1"].legal_moves
-        breakpoint()
         board.remove_piece(black["qbishop"])
         assert translate_coord("d5") in white["pawn_1"].legal_moves
         board.remove_piece(white["qrook"])

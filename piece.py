@@ -61,7 +61,34 @@ class King(Piece):
         # test if king is in the other player's list of threatened squares
         return self.pos in self.player.other_player.threatens_all
 
-        )
+    @property
+    def can_castle(self):
+        if self.moved:
+            return []
+        rooks = (self.player["qrook"], self.player["krook"])
+        castleable = []
+        for rook in rooks:
+            if rook.moved:
+                continue
+            # if queenside rook, check those squares are empty and unthreatened
+            if rook.pos[0] == 0:
+                castle_squares = [(i, rook.pos[1]) for i in range(1, 4)]
+                side = "queenside"
+            # else check kingside squares
+            elif rook.pos[0] == 7:
+                castle_squares = [(i, rook.pos[1]) for i in range(5, 7)]
+                side = "kingside"
+            else:
+                raise RuntimeError(f"Castling evaluation run on invalid piece, {rook}")
+            if all(
+                [
+                    self.player.board[c] is None
+                    and c not in self.player.other_player.threatens_all
+                    for c in castle_squares
+                ]
+            ):
+                castleable.append(side)
+        return castleable
 
     @property
     def potential_moves(self):
