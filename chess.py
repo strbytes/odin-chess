@@ -36,9 +36,10 @@ def translate_algebraic(alg_coord):
     }
     if alg_coord[0:3] == "O-O" or alg_coord[0:3] == "0-0":
         if alg_coord[3:] == "-O" or alg_coord[3:] == "-0":
-            translated["castle_side"] = "kingside"
-        else:
             translated["castle_side"] = "queenside"
+        else:
+            translated["castle_side"] = "kingside"
+        return translated
     pieces = {"K": King, "Q": Queen, "R": Rook, "B": Bishop, "N": Knight}
     xs = "abcdefgh"
     ys = "12345678"
