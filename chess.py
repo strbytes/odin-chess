@@ -225,6 +225,7 @@ class Player:
     def __init__(self, board, color):
         self.board = board
         self.color = color
+        self.other_color = "white" if color == "black" else "black"
         self.pieces = []
         self.pieces_dict = {}
         self.removed = []

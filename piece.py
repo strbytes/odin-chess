@@ -58,19 +58,29 @@ class King(Piece):
 
     @property
     def in_check(self):
-        return False
+        # test if king is in the other player's list of threatened squares
+        return (
+            self.pos in self.player.board.players[self.player.other_color].threatens_all
+        )
 
     @property
     def potential_moves(self):
-        # TODO
-        return []
+        assert self.pos, "potential_moves called on a piece with no position"
+        x, y = self.pos
+        moves = []
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                if not dx == 0 == y:
+                    if 0 <= x + dx <= 7 and 0 <= y + dy <= 7:
+                        coord = (x + dx, y + dy)
+                        moves.append(coord)
+        return moves
 
     @property
     def threatens(self):
         if not self.pos:
             return []
-        # TODO
-        return []
+        return self.potential_moves
 
 
 class Queen(Piece):
