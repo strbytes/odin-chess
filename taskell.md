@@ -3,20 +3,14 @@
 - Main game loop
     * [x] accept algebraic notation as moves
     * [ ] display helpful messages for unallowed moves
-- check/mate/draw
-    > Game method to test for check and draw
-    * [ ] need to be able to access each player's king every turn and test for check (to alert the player, the Piece movement logic already won't allow moves that break the check rule)
-    * [ ] if king is in check, test if the king has any moves available or if another piece can take or block the checker
-- Game object
-    * [x] manage turns
-    * [ ] manage checkmate
-    * [x] work with Pawn to allow en passant only turn immediately after double step
-    * [x] pawn promotion
 - Display removed pieces in board string
 - Refactor board.__str__ to be modular
     > Would need to add a method that builds an array of squares (including color information) which can then be modified by __str__ and other methods.
     * [ ] __str__ would build the string and add file and rank
     * [ ] highlight_squares would take a set of squares to highlight
+- Refactor board to use algebraic notation to interact with its array data structure
+    > This may be a big hassle but would make test writing easier and more clear. Would also affect Piece.
+- Save/Load games
 
 ## Doing
 
@@ -26,7 +20,15 @@
     * [ ] needs to show moves that would block or take a checking piece (this logic is currently in the move method)
     * [x] need to prevent test_check loops when looking at opposing Pieces' legal moves
     * [x] rewrite tests that expect legal_moves to return a full list of untested potential moves
-- Test en-passant King-in-check special case
+- check/mate/draw
+    > Game method to test for check and draw
+    * [x] need to be able to access each player's king every turn and test for check (to alert the player, the Piece movement logic already won't allow moves that break the check rule)
+    * [ ] if king is in check, test if the king has any moves available or if another piece can take or block the checker
+- Game object
+    * [x] manage turns
+    * [ ] manage checkmate
+    * [x] work with Pawn to allow en passant only turn immediately after double step
+    * [x] pawn promotion
 
 ## Done
 
@@ -81,3 +83,4 @@
     * [x] Players create Pieces and add to board
 - Pawn promotion
 - Fix King showing illegal moves in check testing (two queens at corners)
+- Test en-passant King-in-check special case
