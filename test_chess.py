@@ -267,5 +267,12 @@ class TestPawn:
         return game, board, white, black
 
     def test_en_passant_special_case(self, en_passant_setup):
+        """Test special setup to make sure en-passant doesn't allow moves that put King into check"""
         game, board, white, black = en_passant_setup
-        # TODO
+        assert translate_coord("d5") not in white["pawn_1"].legal_moves
+        assert translate_coord("e3") not in black["pawn_1"].legal_moves
+        breakpoint()
+        board.remove_piece(black["qbishop"])
+        assert translate_coord("d5") in white["pawn_1"].legal_moves
+        board.remove_piece(white["qrook"])
+        assert translate_coord("e3") in black["pawn_1"].legal_moves
