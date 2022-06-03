@@ -292,10 +292,13 @@ class Player:
         # use a taken piece if possible
         for p in self.removed:
             if isinstance(p, promotion):
+                self.board.remove_piece(piece)
                 self.board.add_piece(p, coord)
                 return
-        self.board.add_piece(promotion(self), coord)
         self.board.remove_piece(piece)
+        self.board.add_piece(promotion(self), coord)
+        self.pieces.append(self.board[coord])
+        self.pieces_dict[self.board[coord]] = coord
 
     @property
     def threatens_all(self):
