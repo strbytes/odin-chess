@@ -13,16 +13,20 @@
     * [x] work with Pawn to allow en passant only turn immediately after double step
     * [x] pawn promotion
 - Display removed pieces in board string
-- Test en-passant King-in-check special case
+- Refactor board.__str__ to be modular
+    > Would need to add a method that builds an array of squares (including color information) which can then be modified by __str__ and other methods.
+    * [ ] __str__ would build the string and add file and rank
+    * [ ] highlight_squares would take a set of squares to highlight
 
 ## Doing
 
 - Rework legal_moves
     > Need to be able to see only truly legal moves available to every piece every turn in order to evaluate checkmate and draw
-    * [ ] needs to filter for moves that would check self (this logic is currently in the move method)
+    * [x] needs to filter for moves that would check self (this logic is currently in the move method)
     * [ ] needs to show moves that would block or take a checking piece (this logic is currently in the move method)
-    * [ ] need to prevent test_check loops when looking at opposing Pieces' legal moves
-    * [ ] rewrite tests that expect legal_moves to return a full list of untested potential moves
+    * [x] need to prevent test_check loops when looking at opposing Pieces' legal moves
+    * [x] rewrite tests that expect legal_moves to return a full list of untested potential moves
+- Test en-passant King-in-check special case
 
 ## Done
 
@@ -76,3 +80,4 @@
     * [x] Board creates Players
     * [x] Players create Pieces and add to board
 - Pawn promotion
+- Fix King showing illegal moves in check testing (two queens at corners)
