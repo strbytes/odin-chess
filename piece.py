@@ -59,8 +59,8 @@ class King(Piece):
     @property
     def in_check(self):
         # test if king is in the other player's list of threatened squares
-        return (
-            self.pos in self.player.board.players[self.player.other_color].threatens_all
+        return self.pos in self.player.other_player.threatens_all
+
         )
 
     @property

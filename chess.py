@@ -225,7 +225,6 @@ class Player:
     def __init__(self, board, color):
         self.board = board
         self.color = color
-        self.other_color = "white" if color == "black" else "black"
         self.pieces = []
         self.pieces_dict = {}
         self.removed = []
@@ -238,6 +237,13 @@ class Player:
             self.pieces_dict[entry] = piece
             if isinstance(piece, King):
                 self.king = piece
+
+    @property
+    def other_player(self):
+        if self.color == "white":
+            return self.board.players["black"]
+        elif self.color == "black":
+            return self.board.players["white"]
 
     def make_move(self, piece_type, coord, file, rank, promotion, castle_side):
         if castle_side:
