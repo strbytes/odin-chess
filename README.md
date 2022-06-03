@@ -2,14 +2,19 @@
 
 Implemented in Python because I don't feel like learning Ruby. Using a more relaxed approach after focusing on TDD for the last two projects. Basic logic for piece movement is implemented, now need to develop the main Game object and loop to play an actual game with the pieces.
 
-chess.py - Game and Player classes -- TODO
+-- chess.py --
+Game - Manages the game state at the highest level.
+Implemented: Playing a single turn at a time, keeping track of turn number. TODO: Check for game-over states (e.g. checkmate, stalemate), saving and loading games, playing a full game on a loop.
 
-board.py - Board class and helper constants. A Board stores all of the pieces and their locations, as well as handling fundamental movements.
+Board - Stores the Players and implements basic logic for adding, moving, and removing pieces from the board.
 
-pieces.py - Piece generic class, specific subclasses for each type of chess piece, and a helper function translate_algebraic. Pieces contain the logic for their own movement, including Pawn special movement rules and castling and testing for check in Kings.
+Player - Stores Pieces and methods for making moves.
 
-test_legal_moves.py - Tests for lower level functions in Pieces, particularly for evaluating what moves are available to a piece at a particular time.
+-- pieces.py --
+Piece generic class and specific subclasses for each type of chess piece. Pieces contain the logic for evaluating legal moves, including Pawn special movement rules and castling and testing for check in Kings.
 
-test_move.py - Tests for moving Pieces using their internal movement functions. Includes tests on castling and preventing Kings moving into check or other pieces moving and putting their King into check.
+-- test_chess.py --
+Tests for currently implemented features.
 
-taskell.md - Kanban board for project managed with taskell
+-- taskell.md --
+Kanban board for project managed with taskell.
