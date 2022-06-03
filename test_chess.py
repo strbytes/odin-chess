@@ -47,6 +47,38 @@ def test_empty_board(empty_board):
     assert len(black.removed) == 16
 
 
+class TestKing:
+    def test_empty(self, empty_board):
+        game, board, white, black = empty_board
+        board.add_piece(white["king"], (3, 3))
+        assert white["king"].legal_moves == [
+            (2, 2),
+            (2, 3),
+            (2, 4),
+            (3, 2),
+            (3, 4),
+            (4, 2),
+            (4, 3),
+            (4, 4),
+        ]
+
+    def test_check(self, empty_board):
+        game, board, white, black = empty_board
+        board.add_piece(white["king"], (3, 3))
+        board.add_piece(black["qrook"], (2, 2))
+        assert white.king.legal_moves == [(2, 2), (3, 4), (4, 3), (4, 4)]
+        assert not white.king.in_check
+        board.add_piece(black["krook"], (4, 4))
+        assert white.king.legal_moves == [(2, 2), (4, 4)]
+        assert not white.king.in_check
+        board.add_piece(black["queen"], (2, 2))
+        board.remove_piece(black["krook"])
+        assert white.king.legal_moves == [(2, 2), (3, 4), (4, 3)]
+        assert white.king.in_check
+        board.add_piece(black["pawn_1"], (4, 4))
+        black.promote(black["pawn_1"], (4, 4), Queen)
+
+
 class TestQueen:
     def test_empty(self, empty_board):
         game, board, white, black = empty_board
