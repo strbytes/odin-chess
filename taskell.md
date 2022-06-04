@@ -1,34 +1,23 @@
 ## To Do
 
-- Main game loop
-    * [x] accept algebraic notation as moves
-    * [ ] display helpful messages for unallowed moves
 - Display removed pieces in board string
 - Refactor board.__str__ to be modular
     > Would need to add a method that builds an array of squares (including color information) which can then be modified by __str__ and other methods.
     * [ ] __str__ would build the string and add file and rank
     * [ ] highlight_squares would take a set of squares to highlight
-- Refactor board to use algebraic notation to interact with its array data structure
-    > This may be a big hassle but would make test writing easier and more clear. Would also affect Piece.
 - Save/Load games
+- Refactor coords to use a class that can accept and produce both raw and algebraic forms
+- Rework display to disambiguate piece colors
+- Potential features
+    * [ ] after refactoring board display: highlight moves available by a piece
+    * [ ] list available moves
+    * [ ] More helpful error messages for disallowed moves?
 
 ## Doing
 
-- Rework legal_moves
-    > Need to be able to see only truly legal moves available to every piece every turn in order to evaluate checkmate and draw
-    * [x] needs to filter for moves that would check self (this logic is currently in the move method)
-    * [ ] needs to show moves that would block or take a checking piece (this logic is currently in the move method)
-    * [x] need to prevent test_check loops when looking at opposing Pieces' legal moves
-    * [x] rewrite tests that expect legal_moves to return a full list of untested potential moves
-- check/mate/draw
-    > Game method to test for check and draw
-    * [x] need to be able to access each player's king every turn and test for check (to alert the player, the Piece movement logic already won't allow moves that break the check rule)
-    * [ ] if king is in check, test if the king has any moves available or if another piece can take or block the checker
-- Game object
-    * [x] manage turns
-    * [ ] manage checkmate
-    * [x] work with Pawn to allow en passant only turn immediately after double step
-    * [x] pawn promotion
+- Add player commands to quit, forfeit
+    * [x] forfeit
+    * [ ] quit
 
 ## Done
 
@@ -84,3 +73,21 @@
 - Pawn promotion
 - Fix King showing illegal moves in check testing (two queens at corners)
 - Test en-passant King-in-check special case
+- check/mate/draw
+    > Game method to test for check and draw
+    * [x] need to be able to access each player's king every turn and test for check (to alert the player, the Piece movement logic already won't allow moves that break the check rule)
+    * [x] if king is in check, test if the king has any moves available or if another piece can take or block the checker
+- Rework legal_moves
+    > Need to be able to see only truly legal moves available to every piece every turn in order to evaluate checkmate and draw
+    * [x] needs to filter for moves that would check self (this logic is currently in the move method)
+    * [x] needs to show moves that would block or take a checking piece (this logic is currently in the move method)
+    * [x] need to prevent test_check loops when looking at opposing Pieces' legal moves
+    * [x] rewrite tests that expect legal_moves to return a full list of untested potential moves
+- Game object
+    * [x] manage turns
+    * [x] manage checkmate
+    * [x] work with Pawn to allow en passant only turn immediately after double step
+    * [x] pawn promotion
+- Main game loop
+    * [x] accept algebraic notation as moves
+    * [x] display helpful messages for unallowed moves
