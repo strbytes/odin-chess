@@ -330,7 +330,7 @@ class Player:
         if castle_side == "queenside":
             self.board.move_piece(self.king, (2, rank))
             self.king.moved = True
-            self.board.move_piece(self["qrook"], (1, rank))
+            self.board.move_piece(self["qrook"], (3, rank))
             self["qrook"].moved = True
         elif castle_side == "kingside":
             self.board.move_piece(self.king, (6, rank))
