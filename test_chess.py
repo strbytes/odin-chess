@@ -75,12 +75,60 @@ class TestGame:
         board.add_piece(black["pawn_2"], (2, 4))
         assert game.game_over == "checkmate"
 
-    def test_famous_games(self, new_game, monkeypatch, capsys):
+    def test_pillsbury_lasker(self, new_game, monkeypatch, capsys):
         game, board, white, black = new_game
-        pillsbury_lasker = StringIO(format_pgn("pillsbury_lasker_1896.pgn"))
-        monkeypatch.setattr("sys.stdin", pillsbury_lasker)
+        gameIO = StringIO(format_pgn("pillsbury_lasker_1896.pgn"))
+        monkeypatch.setattr("sys.stdin", gameIO)
         game.play_game()
-        breakpoint()
+        assert game.forfeit
+        assert white.king.in_check
+        assert white.king.pos == (1, 4)
+        assert not black.king.in_check
+        assert black.king.pos == (7, 6)
+
+    def test_steinitz_bardeleben(self, new_game, monkeypatch, capsys):
+        game, board, white, black = new_game
+        gameIO = StringIO(format_pgn("steinitz_bardeleben_1895.pgn"))
+        monkeypatch.setattr("sys.stdin", gameIO)
+        game.play_game()
+        assert game.forfeit
+        assert not white.king.in_check
+        assert white.king.pos == (6, 0)
+        assert black.king.in_check
+        assert black.king.pos == (7, 7)
+
+    def test_reti_alekhine(self, new_game, monkeypatch, capsys):
+        game, board, white, black = new_game
+        gameIO = StringIO(format_pgn("reti_alekhine_1925.pgn"))
+        monkeypatch.setattr("sys.stdin", gameIO)
+        game.play_game()
+        assert game.forfeit
+        assert not white.king.in_check
+        assert white.king.pos == (7, 1)
+        assert not black.king.in_check
+        assert black.king.pos == (6, 7)
+
+    def test_botvinnik_capablanca(self, new_game, monkeypatch, capsys):
+        game, board, white, black = new_game
+        gameIO = StringIO(format_pgn("botvinnik_capablanca_1938.pgn"))
+        monkeypatch.setattr("sys.stdin", gameIO)
+        game.play_game()
+        assert game.forfeit
+        assert not white.king.in_check
+        assert white.king.pos == (7, 4)
+        assert not black.king.in_check
+        assert black.king.pos == (6, 7)
+
+    def test_kasparov_topalov(self, new_game, monkeypatch, capsys):
+        game, board, white, black = new_game
+        gameIO = StringIO(format_pgn("kasparov_topalov_1999.pgn"))
+        monkeypatch.setattr("sys.stdin", gameIO)
+        game.play_game()
+        assert game.forfeit
+        assert not white.king.in_check
+        assert white.king.pos == (2, 0)
+        assert not black.king.in_check
+        assert black.king.pos == (4, 0)
 
 
 class TestKing:
