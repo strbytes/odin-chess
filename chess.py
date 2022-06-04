@@ -21,15 +21,8 @@ class Game:
 
     def play_turn(self, coord=None):
         player = self.whose_turn
-        if self.game_over == "checkmate":
-            print(f"Checkmate! {player.other_player} wins!")
-            return
-        elif self.game_over == "stalemate":
-            print("Stalemate! Game ends in a draw.")
-            return
-        if player.king.in_check:
-            print("Check!")
-            print(str(player) + ", you are in check.")
+        if self.game_over:
+            raise RuntimeError("play_turn called after game is over")
         if coord:
             # automatic turn play via function call for testing purposes
             player.make_move(**translate_algebraic(coord))
@@ -45,6 +38,17 @@ class Game:
                 break
             except (AssertionError, ValueError) as e:
                 print(e)
+
+    def play_game(self):
+        print("Welcome to Chess!")
+        while True:
+            if self.game_over:
+                if self.game_over == "checkmate":
+                    print(f"Checkmate! {self.whose_turn.other_player} wins!")
+                elif self.game_over == "stalemate":
+                    print("Stalemate! Game ends in a draw.")
+                break
+            self.play_turn()
 
 
 def translate_algebraic(alg_coord):
