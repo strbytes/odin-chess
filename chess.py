@@ -312,7 +312,12 @@ class Player:
         elif len(can_move) > 1:
             raise ValueError(f"multiple pieces can make that move: {can_move}")
         else:
-            raise ValueError(f"No pieces of type {piece_type} can move to {coord}")
+            if rank or file:
+                raise ValueError(
+                    f"No {piece_type.type}s on {('file ' + 'abcdefg'[file]) if file else ''}"
+                    + f"{('rank ' + '12345678'[rank]) if rank else ''} can move to {coord}"
+                )
+            raise ValueError(f"No {piece_type.type}s can move to {coord}")
 
     def castle(self, castle_side):
         assert castle_side in ["queenside", "kingside"]
@@ -363,3 +368,6 @@ class Player:
 
     def __repr__(self):
         return f"{self.color} player"
+
+    def __str__(self):
+        return f"{self.color} player".capitalize()
