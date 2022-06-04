@@ -52,6 +52,8 @@ def format_pgn(file):
     with open(file) as f:
         entries = f.read().strip().split(" ")
     f.close()
+    if entries[-1] == "0-1" or entries[-1] == "1-0":
+        entries[-1] = "F"
     processing = []
     for e in [e for e in entries if "." not in e]:  # filter turn numbers out
         e = e.replace("x", "")

@@ -5,6 +5,7 @@ class Game:
     def __init__(self):
         self.board = Board(self)
         self.turn = 0
+        self.forfeit = False
 
     @property
     def whose_turn(self):
@@ -18,6 +19,8 @@ class Game:
                 return "checkmate"
             else:
                 return "stalemate"
+        elif self.forfeit:
+            return "forfeit"
 
     def play_turn(self, coord=None):
         player = self.whose_turn
@@ -37,6 +40,9 @@ class Game:
         while True:
             try:
                 play = input("Enter a move using algebraic notation > ")
+                if play == "F":
+                    self.forfeit = True
+                    break
                 player.make_move(**translate_algebraic(play))
                 self.turn += 1
                 break
@@ -47,10 +53,13 @@ class Game:
         print("Welcome to Chess!")
         while True:
             if self.game_over:
+                player = self.whose_turn
                 print()
                 print(self.board)
                 if self.game_over == "checkmate":
-                    print(f"Checkmate! {self.whose_turn.other_player} wins!")
+                    print(f"Checkmate! {player.other_player} wins!")
+                elif self.game_over == "forfeit":
+                    print(f"{player} forfeits! {player.other_player} wins!")
                 elif self.game_over == "stalemate":
                     print("Stalemate! Game ends in a draw.")
                 break
