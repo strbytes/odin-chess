@@ -110,13 +110,18 @@ class TestKing:
         game, board, white, black = new_game
         with pytest.raises(ValueError) as e:
             game.play_turn("O-O-O")
-        assert "cannot castle" in str(e.value)
+        assert "Cannot castle" in str(e.value)
         board.remove_piece(white["queen"])
         board.remove_piece(white["qbishop"])
         board.remove_piece(white["qknight"])
         game.play_turn("O-O-O")
         assert white.king.pos == (2, 0)
         assert white["qrook"].pos == (1, 0)
+        board.remove_piece(black["kbishop"])
+        board.remove_piece(black["kknight"])
+        game.play_turn("O-O")
+        assert black.king.pos == (6, 7)
+        assert black["krook"].pos == (5, 7)
 
 
 class TestQueen:

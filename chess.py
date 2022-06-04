@@ -270,8 +270,10 @@ class Player:
 
     def make_move(self, piece_type, coord, file, rank, promotion, castle_side):
         if castle_side:
-            self.castle(castle_side)
-            return
+            if castle_side in self.king.can_castle:
+                self.castle(castle_side)
+                return
+            raise ValueError(f"Cannot castle {castle_side}.")
         can_move = []
         for p in self.pieces:
             if isinstance(p, piece_type) and p.pos and coord in p.legal_moves:
@@ -321,20 +323,17 @@ class Player:
 
     def castle(self, castle_side):
         assert castle_side in ["queenside", "kingside"]
-        if castle_side in self.king.can_castle:
-            rank = self.king.pos[1]
-            if castle_side == "queenside":
-                self.board.move_piece(self.king, (2, rank))
-                self.king.moved = True
-                self.board.move_piece(self["qrook"], (1, rank))
-                self["qrook"].moved = True
-            elif castle_side == "queenside":
-                self.board.move_piece(self.king, (6, rank))
-                self.king.moved = True
-                self.board.move_piece(self["qrook"], (5, rank))
-                self["qrook"].moved = True
-        else:
-            raise ValueError(f"cannot castle {castle_side}")
+        rank = self.king.pos[1]
+        if castle_side == "queenside":
+            self.board.move_piece(self.king, (2, rank))
+            self.king.moved = True
+            self.board.move_piece(self["qrook"], (1, rank))
+            self["qrook"].moved = True
+        elif castle_side == "kingside":
+            self.board.move_piece(self.king, (6, rank))
+            self.king.moved = True
+            self.board.move_piece(self["krook"], (5, rank))
+            self["krook"].moved = True
 
     def promote(self, piece, coord, promotion):
         # use a taken piece if possible
