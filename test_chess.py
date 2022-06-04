@@ -1,3 +1,4 @@
+from io import StringIO
 from chess import *
 import pytest
 
@@ -47,6 +48,19 @@ def test_empty_board(empty_board):
     assert len(black.removed) == 16
 
 
+def format_pgn(file):
+    with open(file) as f:
+        entries = f.read().strip().split(" ")
+    f.close()
+    processing = []
+    for e in [e for e in entries if "." not in e]:  # filter turn numbers out
+        e = e.replace("x", "")
+        e = e.replace("+", "")
+        processing.append(e)
+    finished = "\n".join(processing)
+    return finished
+
+
 class TestGame:
     def test_game_over(self, empty_board):
         game, board, white, black = empty_board
@@ -58,6 +72,13 @@ class TestGame:
         assert game.game_over == "stalemate"
         board.add_piece(black["pawn_2"], (2, 4))
         assert game.game_over == "checkmate"
+
+    def test_famous_games(self, new_game, monkeypatch, capsys):
+        game, board, white, black = new_game
+        pillsbury_lasker = StringIO(format_pgn("pillsbury_lasker_1896.pgn"))
+        monkeypatch.setattr("sys.stdin", pillsbury_lasker)
+        game.play_game()
+        breakpoint()
 
 
 class TestKing:
