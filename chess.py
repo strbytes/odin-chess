@@ -28,7 +28,9 @@ class Game:
             player.make_move(**translate_algebraic(coord))
             self.turn += 1
             return
+        print()
         print(self.board)
+        print(f"Turn {((self.turn) // 2) + 1}")
         if player.king.in_check:
             print(str(player) + "is in check!")
         print(str(player) + ", it's your turn!")
@@ -45,6 +47,7 @@ class Game:
         print("Welcome to Chess!")
         while True:
             if self.game_over:
+                print()
                 print(self.board)
                 if self.game_over == "checkmate":
                     print(f"Checkmate! {self.whose_turn.other_player} wins!")
