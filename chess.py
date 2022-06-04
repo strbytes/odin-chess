@@ -36,11 +36,11 @@ class Game:
             self.turn += 1
             return
         print(self.board)
-        print(player, ", it's your turn!")
+        print(str(player) + ", it's your turn!")
         while True:
             try:
                 play = input("Enter a move using algebraic notation > ")
-                player.make_move(*translate_algebraic(play))
+                player.make_move(**translate_algebraic(play))
                 self.turn += 1
                 break
             except (AssertionError, ValueError) as e:
