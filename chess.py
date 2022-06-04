@@ -29,6 +29,8 @@ class Game:
             self.turn += 1
             return
         print(self.board)
+        if player.king.in_check:
+            print(str(player) + "is in check!")
         print(str(player) + ", it's your turn!")
         while True:
             try:
@@ -43,6 +45,7 @@ class Game:
         print("Welcome to Chess!")
         while True:
             if self.game_over:
+                print(self.board)
                 if self.game_over == "checkmate":
                     print(f"Checkmate! {self.whose_turn.other_player} wins!")
                 elif self.game_over == "stalemate":
