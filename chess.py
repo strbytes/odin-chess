@@ -280,13 +280,13 @@ class Player:
         can_move = []
         for p in self.pieces:
             if isinstance(p, piece_type) and p.pos and coord in p.legal_moves:
-                if file and rank:
+                if file is not None and rank is not None:
                     if p.pos == (file, rank):
                         can_move.append(p)
-                elif file:
+                elif file is not None:
                     if p.pos[0] == file:
                         can_move.append(p)
-                elif rank:
+                elif rank is not None:
                     if p.pos[1] == rank:
                         can_move.append(p)
                 else:
