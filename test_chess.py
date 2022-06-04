@@ -137,7 +137,7 @@ class TestKing:
         board.remove_piece(white["qknight"])
         game.play_turn("O-O-O")
         assert white.king.pos == (2, 0)
-        assert white["qrook"].pos == (1, 0)
+        assert white["qrook"].pos == (3, 0)
         board.remove_piece(black["kbishop"])
         board.remove_piece(black["kknight"])
         game.play_turn("O-O")
