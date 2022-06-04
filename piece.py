@@ -97,7 +97,7 @@ class King(Piece):
         moves = []
         for dx in (-1, 0, 1):
             for dy in (-1, 0, 1):
-                if not dx == 0 == y:
+                if not dx == 0 == dy:
                     if 0 <= x + dx <= 7 and 0 <= y + dy <= 7:
                         coord = (x + dx, y + dy)
                         moves.append(coord)
@@ -120,7 +120,7 @@ class Queen(Piece):
         moves = []
         for dx in (-1, 0, 1):
             for dy in (-1, 0, 1):
-                if not dx == 0 == y:
+                if not dx == 0 == dy:
                     i = 1
                     while 0 <= x + dx * i <= 7 and 0 <= y + dy * i <= 7:
                         coord = (x + dx * i, y + dy * i)
